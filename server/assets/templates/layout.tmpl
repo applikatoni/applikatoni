@@ -1,0 +1,66 @@
+{{define "layout"}}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <link rel="icon" href="/assets/favicon.png">
+
+    <title>Applikatoni</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
+
+    <!-- Applikatoni -->
+    <link rel="stylesheet" href="/assets/applikatoni.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Applikatoni</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          {{ if .currentUser }}
+            {{template "applicationsNavbar" .}}
+          {{end}}
+
+          <p class="nav navbar-text navbar-right user-controls">
+            {{ if .currentUser }}
+              <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
+              <b>{{ .currentUser.Name }}</b>
+              <a href="/oauth2/logout" class="navbar-link">Log out</a>
+            {{ else }}
+              <a href="/login" class="navbar-link login">Log In</a>
+            {{ end }}
+          </p>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container">
+      {{template "body" .}}
+    </div>
+
+    {{template "hoganTemplates"}}
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <!-- hogan.js -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/hogan.js/3.0.2/hogan.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.2/moment.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/livestamp/1.1.2/livestamp.min.js"></script>
+
+    <script type="text/javascript" src="/assets/clickspark.min.js"></script>
+
+    <script type="text/javascript" src="/assets/applikatoni.js"></script>
+    <script type="text/javascript" src="/assets/favicon.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+  </body>
+</html>
+{{end}}

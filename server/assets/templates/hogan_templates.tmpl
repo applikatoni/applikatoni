@@ -1,0 +1,148 @@
+{{define "hoganTemplates"}}
+  <script id="pullRequestTemplate" type="text/template">
+    <tr>
+      <td class="table-w-5">
+        <img src="<% user.avatar_url %>" class="img-circle avatar" title="<% user.login %>">
+      </td>
+      <td class="table-w-10">
+        <code><% head.ref %></code>
+      </td>
+      <td><a href="<% html_url %>"><% title %></a></td>
+      <td><abbr data-livestamp="<% updated_at %>" title="<% updated_at %>"><% updated_at %></abbr></td>
+      <td><img src="<% travis_image_url %>"></td>
+      <td class="table-w-10 text-right">
+        <div>
+          <button class="btn btn-default btn-block deploy-pull-request" data-pull-request-head-sha="<% head.sha %>" data-pull-request-head-ref="<% head.ref %>">Deploy</button>
+        </div>
+      </td>
+    </tr>
+  </script>
+
+  <script id="branchTemplate" type="text/template">
+    <tr>
+      <td class="table-w-5">
+        <img src="<% userAvatarUrl %>" class="img-circle avatar" title="<% userName %>">
+      </td>
+      <td class="table-w-10">
+        <code><% name %></code>
+      </td>
+      <td>
+        <div class="branch-cell-sha">Commit SHA: <% shortSha %></div>
+        <%#messageBody%>
+          <div class="branch-cell-message-title"><% message %></div>
+          <a href="#" class="message-toggler" data-action="toggle-full-message">...</a>
+          <pre class="hidden message-body"><% messageBody %></pre>
+        <%/messageBody%>
+        <%^messageBody%>
+          <div class="branch-cell-message-title"><% message %></div>
+        <%/messageBody%>
+      </td>
+      <td><abbr data-livestamp="<% updatedAt %>" title="<% updatedAt %>"><% updatedAt %></abbr></td>
+      <td><img src="<% travisImageURL %>"></td>
+      <td class="table-w-10 text-right">
+        <div>
+          <button class="btn btn-default btn-block deploy-branch" data-branch-sha="<% sha %>" data-branch-name="<% name %>">Deploy</button>
+        </div>
+      </td>
+    </tr>
+  </script>
+
+  <script id="logEntryStdoutTemplate" type="text/template">
+    <p class="log-entry stdout">
+      <span class="log-entry-origin"><% origin %></span>
+      <span class="log-entry-message"><% message %></span>
+    </p>
+  </script>
+
+  <script id="logEntryStderrTemplate" type="text/template">
+    <p class="log-entry stderr">
+      <span class="log-entry-origin"><% origin %></span>
+      <span class="log-entry-message"><% message %></span>
+    </p>
+  </script>
+
+  <script id="logEntryCmdStartTemplate" type="text/template">
+    <p class="log-entry cmd-start">
+      <span class="log-entry-origin"><% origin %></span>
+      <span class="log-entry-message"><% message %></span>
+    </p>
+  </script>
+
+  <script id="logEntryCmdSuccessTemplate" type="text/template">
+    <p class="log-entry cmd-success">
+      <span class="log-entry-origin"><% origin %></span>
+      <span class="log-entry-message"><% message %> OK</span>
+    </p>
+  </script>
+
+  <script id="logEntryCmdFailTemplate" type="text/template">
+    <p class="log-entry cmd-fail">
+      <span class="log-entry-origin"><% origin %></span>
+      <span class="log-entry-message">FAIL -- <% message %></span>
+    </p>
+  </script>
+
+  <script id="logEntryStageStartTemplate" type="text/template">
+    <p class="log-entry stage-start">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">Starting stage "<% message %>" now</span>
+    </p>
+  </script>
+
+  <script id="logEntryStageSuccessTemplate" type="text/template">
+    <p class="log-entry stage-success">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">Finished stage "<% message %>" successfully</span>
+    </p>
+  </script>
+
+  <script id="logEntryStageFailTemplate" type="text/template">
+    <p class="log-entry stage-fail">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">STAGE "<% message %>" FAILED</span>
+    </p>
+  </script>
+
+  <script id="logEntryStageResultTemplate" type="text/template">
+    <p class="log-entry stage-result">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message"><% message %></span>
+    </p>
+  </script>
+
+  <script id="logEntryDeploymentStartTemplate" type="text/template">
+    <p class="log-entry deployment-start">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">Starting deployment now (<% message %>)</span>
+    </p>
+  </script>
+
+  <script id="logEntryDeploymentFailTemplate" type="text/template">
+    <p class="log-entry deployment-fail">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">DEPLOYMENT FAILED (<% message %>)</span>
+    </p>
+  </script>
+
+  <script id="logEntryDeploymentSuccessTemplate" type="text/template">
+    <p class="log-entry deployment-success">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">Deployment finished (<% message %>)</span>
+    </p>
+  </script>
+
+  <script id="errorMessageTemplate" type="text/template">
+    <div class="alert alert-danger error-message" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only">Error:</span>
+      <% message %>
+    </div>
+  </script>
+
+  <script id="logEntryKillReceivedTemplate" type="text/template">
+    <p class="log-entry kill-received">
+      <span class="log-entry-systemprefix">***</span>
+      <span class="log-entry-message">RECEIVED KILL SIGNAL: <% message %></span>
+    </p>
+  </script>
+{{end}}

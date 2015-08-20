@@ -1,0 +1,53 @@
+{{define "deploymentsTable"}}
+  {{ $applicationName := .Application.Name }}
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Target</th>
+        <th>State</th>
+        <th>Commit SHA</th>
+        <th>Comment</th>
+        <th>Deployed At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {{range .Deployments}}
+      <tr>
+        <td class="table-w-5">
+          <img src="{{.User.AvatarUrl}}" class="img-circle avatar" title="{{.User.Name}}" />
+        </td>
+        <td>{{.TargetName}}</td>
+        <td>
+          <a href="/{{$applicationName}}/deployments/{{.Id}}">
+            {{fmtDeploymentState .State}}
+          </a>
+        </td>
+        <td>{{fmtCommit .}}</td>
+        <td>
+          <p class="clean monospace deployment-comment">
+          {{newlineToBreak .Comment}}
+          </p>
+        </td>
+        <td><abbr data-livestamp="{{.CreatedAt.Unix}}" title="{{.CreatedAt}}">{{.CreatedAt}}</abbr></td>
+        <td class="table-w-10 text-right">
+          <a href="/{{$applicationName}}/deployments/{{.Id}}" class="btn btn-block btn-default">View</a>
+        </td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+{{end}}
+
+{{define "applicationsNavbar"}}
+ {{ $user := .currentUser }}
+  <ul class="nav navbar-nav application-list">
+    {{range .Applications}}
+      {{if .IsReader $user.Name }}
+      <li><a href="/{{.Name}}">{{.Name}}</a></li>
+      {{end}}
+    {{end}}
+  </ul>
+{{end}}

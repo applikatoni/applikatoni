@@ -1,0 +1,15 @@
+host: http://localhost:8080
+application: flincOnRails
+api_token: 4fdd575f-342e-4f6b-af1e-ce3e9f75367d
+stages:
+  staging:
+    - CHECK_CONNECTION
+    - PRE_DEPLOYMENT
+    - CODE_DEPLOYMENT
+    - POST_DEPLOYMENT
+  production:
+    - CHECK_CONNECTION
+    - PRE_DEPLOYMENT
+    - CODE_DEPLOYMENT
+    - COMPILE_ASSETS
+    - POST_DEPLOYMENT

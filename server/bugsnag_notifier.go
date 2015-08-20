@@ -1,0 +1,73 @@
+package main
+
+import (
+	"log"
+	"net/http"
+	"net/url"
+
+	"github.com/flinc/applikatoni/deploy"
+	"github.com/flinc/applikatoni/models"
+
+	"database/sql"
+)
+
+const (
+	bugsnagNotifyEndpoint = "https://notify.bugsnag.com/deploy"
+)
+
+func NotifyBugsnag(db *sql.DB, endpoint string, deploymentId int) {
+	deployment, err := getDeployment(db, deploymentId)
+	if err != nil {
+		log.Printf("Could not find deployment with id %v, %s\n", deploymentId, err)
+		return
+	}
+
+	application, err := findApplication(deployment.ApplicationName)
+	if err != nil {
+		log.Printf("Could not find application with name %v, %s\n", deployment.ApplicationName, err)
+		return
+	}
+
+	target, err := findTarget(application, deployment.TargetName)
+	if err != nil {
+		log.Printf("Could not find target with name %v, %s\n", deployment.TargetName, err)
+		return
+	}
+
+	if target.BugsnagApiKey == "" {
+		return
+	}
+
+	SendBugsnagRequest(bugsnagNotifyEndpoint, deployment, target, application)
+}
+
+func SendBugsnagRequest(endpoint string, d *models.Deployment, t *models.Target, a *models.Application) {
+	params := url.Values{
+		"apiKey":       {t.BugsnagApiKey},
+		"releaseStage": {d.TargetName},
+		"repository":   {a.GitHubRepo},
+		"branch":       {d.Branch},
+		"revision":     {d.CommitSha},
+	}
+
+	resp, err := http.PostForm(endpoint, params)
+
+	if err != nil || resp.StatusCode != 200 {
+		log.Printf("Error while notifying Bugsnag about deployment of %v on %v, %v! err: %s, resp: %s\n", d.ApplicationName, d.TargetName, d.CommitSha, err, resp)
+		return
+	}
+
+	log.Printf("Successfully notified Bugsnag about deployment of %v on %v, %v!\n", d.ApplicationName, d.TargetName, d.CommitSha)
+}
+
+func newBugsnagNotifier(db *sql.DB) deploy.Listener {
+	fn := func(logs <-chan deploy.LogEntry) {
+		for entry := range logs {
+			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
+				go NotifyBugsnag(db, bugsnagNotifyEndpoint, entry.DeploymentId)
+			}
+		}
+	}
+
+	return fn
+}

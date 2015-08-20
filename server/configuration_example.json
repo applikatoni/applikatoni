@@ -1,0 +1,87 @@
+{
+  "ssl_enabled": false,
+  "host": "applikatoni.shipping-company.com",
+  "session_secret": "<SECRET>",
+  "oauth2_state_string": "<UNGUESSABLE RANDOM OAUTH2 STATE STRING>",
+  "github_client_id": "<CLIENT_ID>",
+  "github_client_secret": "<CLIENT_SECRET>",
+  "mandrill_api_key": "<API_KEY>",
+  "applications": [
+    {
+      "name": "our-main-application",
+      "read_usernames": ["<CAN READ DEPLOYMENT HISTORY BUT NOT DEPLOY>"],
+      "github_owner": "shipping-company",
+      "github_repo": "our-main-application",
+      "github_branches": ["master", "develop", "production", "production"],
+      "travis_image_url": "https://magnum.travis-ci.com/shipping-company/our-main-application.svg?token=<KEY HERE>",
+      "daily_digest_receivers": ["team@shipping-company.com"],
+      "daily_digest_target": "production",
+      "targets": [
+        {
+          "name": "production",
+          "deployment_user": "deploy",
+          "deployment_ssh_key": "<SSH KEY>",
+          "deploy_usernames": ["<YOUR GITHUB USERNAME>"],
+          "default_stages": ["CHECK_CONNECTION", "PRE_DEPLOYMENT", "CODE_DEPLOYMENT", "POST_DEPLOYMENT"],
+          "available_stages": ["CHECK_CONNECTION", "PRE_DEPLOYMENT", "CODE_DEPLOYMENT", "MIGRATE_DATABASE", "POST_DEPLOYMENT"],
+          "bugsnag_api_key": "<YOUR BUGSNAG API KEY>",
+          "flowdock_endpoint": "<FLOWDOCK REST ENTRY POINT WITH HTTP AUTH>",
+          "new_relic_api_key": "<NEW RELIC API KEY>",
+          "new_relic_app_id": "<NEW RELIC APP ID>",
+          "hosts": [
+            {
+              "name": "1.unicorn.production.shipping-company.com:22",
+              "roles": ["web", "migrator"]
+            },
+            {
+              "name": "2.unicorn.production.shipping-company.com:22",
+              "roles": ["web"]
+            },
+            {
+              "name": "1.workers.production.shipping-company.com:22",
+              "roles": ["workers"]
+            }
+          ],
+          "roles": [
+            {
+              "name": "workers",
+              "script_templates": {
+                "CHECK_CONNECTION": "test -d {{.Dir}}",
+                "PRE_DEPLOYMENT": "sudo /etc/init.d/sidekiq stop",
+                "CODE_DEPLOYMENT": "cd {{.Dir}}/current && git fetch --tags -q origin && git reset -q --hard {{.CommitSha}}\ncd {{.Dir}}/current && RAILS_ENV={{.RailsEnv}} bundle install --gemfile {{.Dir}}/current/Gemfile --path {{.Dir}}/shared/bundle --deployment --quiet --without development test",
+                "POST_DEPLOYMENT": "sudo /etc/init.d/sidekiq start"
+              },
+              "options": {
+                "Dir": "/var/www/our-main-application",
+                "RailsEnv": "production"
+              }
+            },
+            {
+              "name": "web",
+              "script_templates": {
+                "CHECK_CONNECTION": "test -d {{.Dir}}",
+                "PRE_DEPLOYMENT": "echo 'Unicorn will keep on working'",
+                "CODE_DEPLOYMENT": "cd {{.Dir}}/current && git fetch --tags -q origin && git reset -q --hard {{.CommitSha}}\ncd {{.Dir}}/current && RAILS_ENV={{.RailsEnv}} bundle install --gemfile {{.Dir}}/current/Gemfile --path {{.Dir}}/shared/bundle --deployment --quiet --without development test",
+                "POST_DEPLOYMENT": "sudo /etc/init.d/unicorn hot-reload"
+              },
+              "options": {
+                "Dir": "/var/www/our-main-application",
+                "RailsEnv": "production"
+              }
+            },
+            {
+              "name": "migrator",
+              "script_templates": {
+                "MIGRATE_DATABASE": "cd {{.Dir}} && RAILS_ENV={{.RailsEnv}} bundle exec rake db:migrate"
+              },
+              "options": {
+                "Dir": "/var/www/our-main-application",
+                "RailsEnv": "production"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

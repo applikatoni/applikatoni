@@ -1,0 +1,125 @@
+.user-controls {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
+
+.user-controls .login {
+  line-height: 30px;
+}
+
+.navbar-brand {
+  padding-left: 50px;
+  background: url(/assets/logo_square.png) bottom left no-repeat;
+  background-size: auto 100%;
+}
+
+.avatar {
+  height: 30px;
+  width: 30px;
+}
+
+.panel>.logentries {
+  margin-bottom: 0;
+}
+
+p.clean {
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.monospace {
+  font-family: monospace;
+}
+
+.deployment-comment {
+  word-break: break-word;
+}
+
+.logentries {
+  background-color: #111;
+  color: white;
+  font-family: monospace;
+  font-size: 12px;
+  border-bottom-right-radius: 3px;
+  border-bottom-left-radius: 3px;
+  margin-bottom: 20px;
+  padding: 5px;
+}
+
+.logentries .kill-button {
+  position: absolute;
+  right: 20px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.log-entry-origin {
+  background-color: #333;
+  padding: 4px;
+  border-radius: 3px;
+}
+
+.log-entry.stderr .log-entry-message {
+  color: red;
+}
+
+.cmd-success .log-entry-message {
+  color: lightgreen;
+}
+
+.cmd-start .log-entry-message {
+  color: gold;
+}
+
+.cmd-fail .log-entry-message {
+  color: red;
+}
+
+.stage-success .log-entry-message {
+  color: lightgreen;
+}
+
+.stage-fail .log-entry-message {
+  color: red;
+}
+
+.deployment-fail .log-entry-message {
+  color: red;
+}
+
+.kill-received .log-entry-message {
+  color: red;
+}
+
+.deployment-success .log-entry-message {
+  color: lightgreen;
+}
+
+/* application.tmpl + hogan templates */
+.application-sub-menu {
+  margin-bottom: 10px;
+}
+
+.table-w-5 {
+  width: 5%;
+}
+
+.table-w-10 {
+  width: 10%;
+}
+
+.pull-cell-message,
+.branch-cell-message {
+  width: 500px;
+  vertical-align: top;
+}
+
+.branch .message-body {
+  width: 500px;
+}
+
+.branch-cell-message-title {
+  display: inline;
+  font-family: Monospace;
+}

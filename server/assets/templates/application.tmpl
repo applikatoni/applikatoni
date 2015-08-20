@@ -1,0 +1,141 @@
+{{define "body"}}
+
+<div class="row">
+  <div class="col-md-12 text-right application-sub-menu">
+    <a href="{{.Application.Name}}/toni">
+      <button class="btn btn-default btn-sm">View .toni.yml</button>
+    </a>
+  </div>
+</div>
+
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">New Deployment</h3>
+  </div>
+
+  <div class="panel-body">
+    <form role="form" action="/{{.Application.Name}}/deployments" method="POST" class="new-deployment">
+
+      <div class="row">
+
+        <div class="col-md-5">
+          <div class="form-group">
+            <textarea name="comment" class="form-control" rows="3" placeholder="What are you deploying?"></textarea>
+          </div>
+
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary btn-lg btn-block js-submit-deployment">Deploy!</button>
+          </div>
+        </div>
+
+        <div class="col-md-4 form-horizontal">
+          <div class="form-group">
+            <label class="control-label col-sm-4">Target</label>
+            <div class="col-sm-8">
+              <select name="target" class="form-control">
+                {{ $user := .currentUser }}
+                {{range .Application.Targets}}
+                  {{ if .IsDeployer $user.Name }}
+                  <option value="{{.Name}}">{{.Name}}</option>
+                  {{ end }}
+                {{end}}
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-sm-4">Commit SHA</label>
+            <div class="col-sm-8">
+              <input name="commitsha" type="text" class="form-control">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-sm-4">Branch</label>
+            <div class="col-sm-8">
+              <input name="branch" type="text" class="form-control">
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-3">
+          <a href="#" class="btn btn-default btn-xs js-toggle-advanced">Show advanced options</a>
+
+          <div class="js-stages-container hidden">
+          {{range $index, $target := .Application.Targets}}
+            {{ if eq $index 0 }}
+            <div class="form-group js-stages-form-group" data-target-name="{{$target.Name}}">
+            {{ else }}
+            <div class="form-group js-stages-form-group hidden" data-target-name="{{$target.Name}}">
+            {{ end }}
+              <label class="control-label">Stages</label>
+                {{range .AvailableStages}}
+                <div class="checkbox">
+                  <label>
+                    {{if $target.IsDefaultStage . }}
+                      <input name="stages[]" type="checkbox" value="{{.}}" checked="checked">
+                    {{ else }}
+                      <input name="stages[]" type="checkbox" value="{{.}}">
+                    {{end}}
+                    {{.}}
+                  </label>
+                </div>
+                {{end}}
+            </div>
+          {{end}}
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Open Pull Requests</div>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Branch</th>
+        <th>Description</th>
+        <th>Last Update</th>
+        <th>CI Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody class="pulls" data-pulls-path="/{{.Application.Name}}/pulls">
+    </tbody>
+  </table>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Branches</div>
+  <table class="table table-condensed">
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Branch</th>
+        <th>Last Commit</th>
+        <th>Last Update</th>
+        <th>CI Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody class="branches" data-branches-path="/{{.Application.Name}}/branches">
+    </tbody>
+  </table>
+</div>
+
+
+<div class="panel panel-default">
+  <div class="panel-heading">Last 10 Deployments</div>
+  {{template "deploymentsTable" .}}
+  <div class="panel-footer">
+    <a href="/{{.Application.Name}}/deployments">See all</a>
+  </div>
+</div>
+
+{{end}}

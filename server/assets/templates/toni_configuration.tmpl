@@ -1,0 +1,14 @@
+{{define "body"}}
+
+<h3 class="text-center">.toni.yml for {{.Application.Name}}</h3>
+
+<p>
+Create a <code>.toni.yml</code> file in the root of the
+<code>{{.Application.Name}}</code> directory and fill it with this:
+</p>
+
+<pre>{{ .configContent }}</pre>
+
+And then enjoy using <code>toni</code>!
+{{end}}
+

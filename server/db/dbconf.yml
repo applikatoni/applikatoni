@@ -1,0 +1,11 @@
+development:
+  open: db/development.db
+  driver: sqlite3
+
+test:
+  open: db/test.db
+  driver: sqlite3
+
+production:
+  open: db/production.db
+  driver: sqlite3

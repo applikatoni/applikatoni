@@ -1,0 +1,53 @@
+{{define "body"}}
+
+<div class="row deployment-info" data-deployment-state="{{.Deployment.State}}" data-log-path="{{.Host}}/{{.Application.Name}}/deployments/{{.Deployment.Id}}/log">
+
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Deployment #{{.Deployment.Id}}</h3>
+      </div>
+      <div class="panel-body">
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="media">
+              <div class="media-left">
+                <img src="{{.Deployment.User.AvatarUrl}}" class="img-circle avatar media-object" title="{{.Deployment.User.Name}}"/>
+              </div>
+              <div class="media-body">
+                <p class="clean monospace deployment-comment">
+                {{newlineToBreak .Deployment.Comment}}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <dl class="dl-horizontal">
+              <dt>State</dt>
+              <dd>{{fmtDeploymentState .Deployment.State}}</dd>
+              <dt>Deployed</dt>
+              <dd><abbr data-livestamp="{{.Deployment.CreatedAt.Unix}}" title="{{.Deployment.CreatedAt.Unix}}">{{.Deployment.CreatedAt.Unix}}</abbr></dd>
+              <dt>Target</dt>
+              <dd>{{.Deployment.TargetName}}</dd>
+              <dt>Commit</dt>
+              <dd>{{.Deployment.CommitSha}}</dd>
+            </dl>
+          </div>
+        </div>
+      </div>
+
+      <!-- this will be filled by applikatoni.js -->
+      <div class="logentries">
+        {{ if eq .Deployment.State "active" "new" }}
+        <a class="btn btn-lg btn-danger kill-button" data-kill-path="{{.Host}}/{{.Application.Name}}/deployments/{{.Deployment.Id}}/kill">
+          KILL!
+        </a>
+        {{ end }}
+      </div>
+    </div>
+  </div>
+</div>
+
+{{end}}
