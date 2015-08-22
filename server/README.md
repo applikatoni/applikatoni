@@ -14,8 +14,8 @@
 
 1. Set up the repository inside your Go workspace:
 
-        mkdir -p $GOPATH/src/github.com/flinc/
-        cd $GOPATH/src/github.com/flinc/
+        mkdir -p $GOPATH/src/github.com/applikatoni/
+        cd $GOPATH/src/github.com/applikatoni/
         git clone git@github.com:applikatoni/applikatoni.git
         cd applikatoni
 2. Install dependencies:
