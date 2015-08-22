@@ -177,18 +177,6 @@ deployments by different users to a lot of servers.
 * [Thorsten Ball](https://github.com/mrnugget) ([@thorstenball](https://twitter.com/thorstenball))
 * [Christian Bäuerlein](https://github.com/fabrik42) ([@fabrik42](https://twitter.com/fabrik42))
 
-# Developed at & sponsored by
-
-<a href="https://flinc.org">
-  <img align="left" height=120 width=120 src="https://s3.eu-central-1.amazonaws.com/applikatoni/assets/flinc_logo.png">
-</a>
-
-Applikatoni has initially been developed at flinc and later open-sourced.
-
-[We are hiring!](https://flinc.org/jobs)
-
-<p style="clear: both;"></p>
-
 # License
 
 MIT License. See [LICENSE](LICENSE).
@@ -200,3 +188,11 @@ license.
 For an improved user experience, Applikatoni server ships with
 [clickspark.js](https://github.com/ymc-thzi/clickspark.js). The license of
 clickspark.js is the MIT license.
+
+# Developed at & sponsored by
+
+<p align="center">
+  <a href="https://flinc.org">
+    <img height="200" width="200" style="padding: 5px;" src="https://s3.eu-central-1.amazonaws.com/applikatoni/assets/flinc_logo.png">
+  </a>
+<p>
