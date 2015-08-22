@@ -1,10 +1,14 @@
 ![Applikatoni - Deployments Al Forno](https://s3.eu-central-1.amazonaws.com/applikatoni/banner_with_slogan.png)
 [![Build Status](https://magnum.travis-ci.com/flinc/applikatoni.svg?token=SDCCeAPgTDbvwq8x7qdC&branch=master)](https://magnum.travis-ci.com/flinc/applikatoni)
 
-# What is Applikatoni?
+**Applikatoni is a self-hosted deployment server for small teams, that takes
+your code from GitHub and deploys it to your servers, by running shell commands
+you define.**
 
-Applikatoni is a **self-hosted deployment server for teams**, developed at
-[flinc](https://flinc.org) for internal use and later open sourced.
+# Introduction
+
+Applikatoni was developed at [flinc](https://flinc.org) for internal use and
+later open sourced.
 
 With its web-frontend and its deep **GitHub** integration it allows you to
 deploy your applications to multiple servers with the click of a button. There
@@ -178,7 +182,7 @@ deployments by different users to a lot of servers.
 
 MIT License. See [LICENSE](LICENSE).
 
-For easy of use, Applikatoni server ships with
+For ease of use, Applikatoni server ships with
 [goose](https://bitbucket.org/liamstask/goose). The license of goose is the MIT
 license.
 
