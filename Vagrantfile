@@ -25,8 +25,8 @@ Vagrant.configure(2) do |config|
     mkdir /home/vagrant/go/pkg
     mkdir /home/vagrant/go/bin
 
-    mkdir -p /home/vagrant/go/src/github.com/flinc
-    ln -s /vagrant /home/vagrant/go/src/github.com/flinc/applikatoni
+    mkdir -p /home/vagrant/go/src/github.com/applikatoni
+    ln -s /vagrant /home/vagrant/go/src/github.com/applikatoni/applikatoni
 
     echo "Directory structure created."
 
@@ -42,7 +42,7 @@ Vagrant.configure(2) do |config|
     echo "'goose' installed."
 
     echo "Installing applikatoni main repo..."
-    cd /home/vagrant/go/src/github.com/flinc/applikatoni
+    cd /home/vagrant/go/src/github.com/applikatoni/applikatoni
     go get ./...
     go install ./...
     echo "Installed."
