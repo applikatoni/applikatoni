@@ -6,7 +6,3 @@ server/applikatoni
 server/configuration.json
 server/builds/*
 !server/builds/.gitkeep
-toni/toni
-toni/.toni.yml
-toni/builds/*
-!toni/builds/.gitkeep

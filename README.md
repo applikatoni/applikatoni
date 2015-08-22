@@ -10,8 +10,7 @@ Applikatoni was developed at [flinc](https://flinc.org) for internal use and
 later open sourced.
 
 With its web-frontend and its deep **GitHub** integration it allows you to
-deploy your applications to multiple servers with the click of a button. There
-is also a CLI called `toni`, if clicking isn't your thing.
+deploy your applications to multiple servers with the click of a button.
 
 Besides giving your team **a history of deployments**, so you can see what has
 been deployed by whom to which servers, it also offers integration into a
@@ -37,12 +36,11 @@ all of this.
 With the ability to deploy **multiple applications to different servers with
 varying deployment strategies** you can use Applikatoni however you like.
 
+And if clicking isn't your thing and you prefer a terminal over a web frontend:
+check out [toni](https://github.com/applikatoni/toni) -- the CLI for your
+Applikatoni server.
+
 Also: there is a lot of pizza involved! 🍕
-
-This repository contains two applications:
-
-* applikatoni - This is the Applikatoni server and web application. Check out its [README](https://github.com/applikatoni/applikatoni/tree/master/server)
-* toni - This is the CLI for the Applikatoni server. Check out its [README](https://github.com/applikatoni/applikatoni/tree/master/toni)
 
 # Getting started
 
