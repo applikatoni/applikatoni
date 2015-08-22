@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 type DeploymentLogger struct {

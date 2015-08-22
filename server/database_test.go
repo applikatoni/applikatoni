@@ -7,8 +7,8 @@ import (
 
 	"bitbucket.org/liamstask/goose/lib/goose"
 
-	"github.com/flinc/applikatoni/deploy"
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 var dbConfigDirectory string = "./db"

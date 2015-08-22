@@ -8,8 +8,8 @@ import (
 
 	"code.google.com/p/go-uuid/uuid"
 
-	"github.com/flinc/applikatoni/deploy"
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/models"
 
 	"database/sql"
 )

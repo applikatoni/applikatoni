@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"code.google.com/p/go.crypto/ssh"
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 type ExecutionResult struct {

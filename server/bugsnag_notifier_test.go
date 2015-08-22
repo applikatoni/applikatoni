@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 func TestNotifyBugsnag(t *testing.T) {

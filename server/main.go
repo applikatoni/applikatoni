@@ -10,7 +10,7 @@ import (
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 
-	"github.com/flinc/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/deploy"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"

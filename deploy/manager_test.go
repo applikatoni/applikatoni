@@ -3,7 +3,7 @@ package deploy
 import (
 	"testing"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 var preDeployment = models.DeploymentStage("PRE_DEPLOYMENT")

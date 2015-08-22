@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 type Configuration struct {

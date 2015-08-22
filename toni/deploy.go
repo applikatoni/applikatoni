@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"path"
 
-	"github.com/flinc/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/gorilla/websocket"
 )
 

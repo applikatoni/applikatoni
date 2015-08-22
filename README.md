@@ -1,5 +1,4 @@
 ![Applikatoni - Deployments Al Forno](https://s3.eu-central-1.amazonaws.com/applikatoni/assets/banner_with_slogan.png)
-[![Build Status](https://magnum.travis-ci.com/flinc/applikatoni.svg?token=SDCCeAPgTDbvwq8x7qdC&branch=master)](https://magnum.travis-ci.com/flinc/applikatoni)
 
 **Applikatoni is a self-hosted deployment server for small teams, that takes
 your code from GitHub and deploys it to your servers, by running shell commands
@@ -42,8 +41,8 @@ Also: there is a lot of pizza involved! 🍕
 
 This repository contains two applications:
 
-* applikatoni - This is the Applikatoni server and web application. Check out its [README](https://github.com/flinc/applikatoni/tree/master/server)
-* toni - This is the CLI for the Applikatoni server. Check out its [README](https://github.com/flinc/applikatoni/tree/master/toni)
+* applikatoni - This is the Applikatoni server and web application. Check out its [README](https://github.com/applikatoni/applikatoni/tree/master/server)
+* toni - This is the CLI for the Applikatoni server. Check out its [README](https://github.com/applikatoni/applikatoni/tree/master/toni)
 
 # Getting started
 
@@ -57,7 +56,7 @@ This repository contains two applications:
           <where your applikatoni instance will be hosted>/oauth2/callback
 
 2. Download the Applikatoni server package and extract it. Or install from
-   source. See the [README](https://github.com/flinc/applikatoni/tree/master/server) for more information.
+   source. See the [README](https://github.com/applikatoni/applikatoni/tree/master/server) for more information.
 
     Version 0.1: [OS X](https://s3.eu-central-1.amazonaws.com/applikatoni/builds/applikatoni-darwin-amd64-1440229141.tar.gz)
 

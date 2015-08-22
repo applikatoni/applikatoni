@@ -13,8 +13,8 @@ import (
 
 	"golang.org/x/oauth2"
 
-	"github.com/flinc/applikatoni/deploy"
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/models"
 	"github.com/gorilla/context"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"

@@ -16,7 +16,7 @@
 
         mkdir -p $GOPATH/src/github.com/flinc/
         cd $GOPATH/src/github.com/flinc/
-        git clone git@github.com:flinc/applikatoni.git
+        git clone git@github.com:applikatoni/applikatoni.git
         cd applikatoni
 2. Install dependencies:
 
@@ -271,7 +271,7 @@ gets turned into this before execution:
 
 The other variable, `CommitSha`, is a **special variable**. It gets merged into
 the `options` field when a deployment is started. You can see the other special
-variables [here](https://github.com/flinc/applikatoni/blob/84946fcf6230fbcd03c2da52bf3d9002a12573d1/models/deployment_config.go#L29-L34).
+variables [here](https://github.com/applikatoni/applikatoni/blob/84946fcf6230fbcd03c2da52bf3d9002a12573d1/models/deployment_config.go#L29-L34).
 
 ##### Script Templates
 

@@ -10,7 +10,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 const (

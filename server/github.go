@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 	"golang.org/x/oauth2"
 )
 

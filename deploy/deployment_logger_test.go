@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/flinc/applikatoni/models"
+	"github.com/applikatoni/applikatoni/models"
 )
 
 var testId int = 999999
