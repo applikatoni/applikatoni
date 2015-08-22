@@ -1,4 +1,4 @@
-![Applikatoni - Deployments Al Forno](https://s3.eu-central-1.amazonaws.com/applikatoni/banner_with_slogan.png)
+![Applikatoni - Deployments Al Forno](https://s3.eu-central-1.amazonaws.com/applikatoni/assets/banner_with_slogan.png)
 [![Build Status](https://magnum.travis-ci.com/flinc/applikatoni.svg?token=SDCCeAPgTDbvwq8x7qdC&branch=master)](https://magnum.travis-ci.com/flinc/applikatoni)
 
 **Applikatoni is a self-hosted deployment server for small teams, that takes
@@ -59,7 +59,7 @@ This repository contains two applications:
 2. Download the Applikatoni server package and extract it. Or install from
    source. See the [README](https://github.com/flinc/applikatoni/tree/master/server) for more information.
 
-    Version 0.1: [OS X](https://s3.eu-central-1.amazonaws.com/applikatoni/builds/applikatoni-darwin-amd64-1439720529.tar.gz)
+    Version 0.1: [OS X](https://s3.eu-central-1.amazonaws.com/applikatoni/builds/applikatoni-darwin-amd64-1440229141.tar.gz)
 
 3. Configure Applikatoni. Check out the [README](./server/README.md) of the
    Applikatoni server for detailed instructions.
