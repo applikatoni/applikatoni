@@ -1,0 +1,8 @@
+sudo: false
+language: go
+before_script:
+  - go get bitbucket.org/liamstask/goose/cmd/goose
+  - cd server && goose -env="test" up && cd ../
+go:
+  - 1.4
+  - 1.5
