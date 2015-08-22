@@ -21,7 +21,7 @@ const (
 	digestTimezone             = "Europe/Berlin"
 	digestSubjectFmt           = " 🍕 Applikatoni Daily Digest - %s"
 	digestFromName             = "Applikatoni"
-	digestFromEmail            = "no-reply@toni.flinc.org"
+	digestFromEmail            = "no-reply@applikatoni.com"
 	digestHtmlTemplateDir      = "./assets/templates/"
 	digestHtmlTemplateFilename = "daily_digest.tmpl"
 	digestTextTemplate         = `Hello there!
