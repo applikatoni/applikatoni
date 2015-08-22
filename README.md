@@ -1,4 +1,5 @@
 ![Applikatoni - Deployments Al Forno](https://s3.eu-central-1.amazonaws.com/applikatoni/assets/banner_with_slogan.png)
+[![Build Status](https://travis-ci.org/applikatoni/applikatoni.svg?branch=master)](https://travis-ci.org/applikatoni/applikatoni)
 
 **Applikatoni is a self-hosted deployment server for small teams, that takes
 your code from GitHub and deploys it to your servers, by running shell commands
