@@ -463,6 +463,13 @@ cd ..
 go test ./...
 ```
 
+# Contributing
+
+All contributions are welcome! Create a fork, a new branch and send a pull
+request!
+
+Is the documentation lacking something? Did you find a bug? Do you have a
+question about how Applikatoni works? Open a issue!
 
 # Is it production ready?
 
