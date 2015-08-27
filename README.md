@@ -429,7 +429,7 @@ gets turned into this before execution:
 
 The other variable, `CommitSha`, is a **special variable**. It gets merged into
 the `options` field when a deployment is started. You can see the other special
-variables [here](https://github.com/applikatoni/applikatoni/blob/84946fcf6230fbcd03c2da52bf3d9002a12573d1/models/deployment_config.go#L29-L34).
+variables [here](https://github.com/applikatoni/applikatoni/blob/fc0fab6ca7445dc471406d9f6dd7e38e23a02cd5/models/deployment_config.go#L29-L34).
 
 #### Script Templates
 
