@@ -34,7 +34,7 @@
               <b>{{ .currentUser.Name }}</b>
               <a href="/oauth2/logout" class="navbar-link">Log out</a>
             {{ else }}
-              <a href="/login" class="navbar-link login">Log In</a>
+              <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
             {{ end }}
           </p>
         </div>

@@ -36,22 +36,6 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	currentUser, err := loadUserFromSession(r)
-	if err != nil {
-		log.Println("error when trying to get current user", err)
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if currentUser != nil {
-		http.Redirect(w, r, "/", http.StatusFound)
-	} else {
-		renderTemplate(w, "login.tmpl", map[string]interface{}{
-			"Applications": config.Applications,
-		})
-	}
-}
-
 func applicationHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := getCurrentUser(r)
 	application := getCurrentApplication(r)

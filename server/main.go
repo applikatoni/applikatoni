@@ -41,7 +41,6 @@ var (
 var (
 	sessionName    = "applikatonisession"
 	templatesFiles = [][]string{
-		{"layout.tmpl", "hogan_templates.tmpl", "partials.tmpl", "login.tmpl"},
 		{"layout.tmpl", "hogan_templates.tmpl", "partials.tmpl", "home.tmpl"},
 		{"layout.tmpl", "hogan_templates.tmpl", "partials.tmpl", "toni_configuration.tmpl"},
 		{"layout.tmpl", "hogan_templates.tmpl", "partials.tmpl", "application.tmpl"},
@@ -116,7 +115,6 @@ func main() {
 	r.HandleFunc("/oauth2/authorize", oauth2authorizeHandler)
 	r.HandleFunc("/oauth2/callback", oauth2callbackHandler)
 	r.HandleFunc("/oauth2/logout", oauth2logoutHandler)
-	r.HandleFunc("/login", loginHandler)
 
 	// Application
 	r.HandleFunc("/{application}/deployments", requireAuthorizedUser(createDeploymentHandler)).Methods("POST")
