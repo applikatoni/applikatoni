@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"code.google.com/p/go.crypto/ssh"
 	"github.com/applikatoni/applikatoni/models"
+	"golang.org/x/crypto/ssh"
 )
 
 type ExecutionResult struct {

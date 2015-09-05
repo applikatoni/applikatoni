@@ -3,8 +3,8 @@ package deploy
 import (
 	"fmt"
 
-	"code.google.com/p/go.crypto/ssh"
 	"github.com/applikatoni/applikatoni/models"
+	"golang.org/x/crypto/ssh"
 )
 
 type Manager struct {

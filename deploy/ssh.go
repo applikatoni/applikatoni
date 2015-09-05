@@ -1,8 +1,9 @@
 package deploy
 
 import (
-	"code.google.com/p/go.crypto/ssh"
 	"log"
+
+	"golang.org/x/crypto/ssh"
 )
 
 func newSSHClient(host string, sshConfig *ssh.ClientConfig) (*ssh.Client, error) {
