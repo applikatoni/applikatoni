@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -25,7 +26,8 @@ type GitHubPullRequest struct {
 		Branch    string `json:"ref"`
 		CommitSha string `json:"sha"`
 	} `json:"head"`
-	TravisImageURL string `json:"travis_image_url"`
+	TravisImageURL  string `json:"travis_image_url"`
+	TravisImageLink string `json:"travis_image_link"`
 }
 
 type GitHubBranch struct {
@@ -40,7 +42,8 @@ type GitHubBranch struct {
 			} `json:"committer"`
 		} `json:"commit"`
 	} `json:"commit"`
-	TravisImageURL string `json:"travis_image_url"`
+	TravisImageURL  string `json:"travis_image_url"`
+	TravisImageLink string `json:"travis_image_link"`
 }
 
 type GitHubClient struct{ *http.Client }
@@ -62,12 +65,18 @@ func (gc *GitHubClient) GetPullRequests(a *models.Application) ([]GitHubPullRequ
 	}
 
 	if a.TravisImageURL != "" {
+		link, err := buildTravisLink(a.TravisImageURL)
+		if err != nil {
+			return nil, err
+		}
+
 		for i, _ := range pulls {
 			imageURL, err := addBranchTravisURL(a.TravisImageURL, pulls[i].Head.Branch)
 			if err != nil {
 				return nil, err
 			}
 			pulls[i].TravisImageURL = imageURL
+			pulls[i].TravisImageLink = link
 		}
 	}
 
@@ -76,6 +85,15 @@ func (gc *GitHubClient) GetPullRequests(a *models.Application) ([]GitHubPullRequ
 
 func (gc *GitHubClient) GetBranches(a *models.Application) ([]GitHubBranch, error) {
 	branches := []GitHubBranch{}
+
+	var travisLink string
+	if a.TravisImageURL != "" {
+		var err error
+		travisLink, err = buildTravisLink(a.TravisImageURL)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	for _, branchName := range a.GitHubBranches {
 		branch := GitHubBranch{}
@@ -92,6 +110,7 @@ func (gc *GitHubClient) GetBranches(a *models.Application) ([]GitHubBranch, erro
 				return nil, err
 			}
 			branch.TravisImageURL = imageURL
+			branch.TravisImageLink = travisLink
 		}
 
 		branches = append(branches, branch)
@@ -138,6 +157,19 @@ func addBranchTravisURL(travisURL string, branch string) (string, error) {
 	q := u.Query()
 	q.Set("branch", branch)
 	u.RawQuery = q.Encode()
+
+	return u.String(), nil
+}
+
+func buildTravisLink(travisImageURL string) (string, error) {
+	u, err := url.Parse(travisImageURL)
+	if err != nil {
+		msg := fmt.Sprintf("failed to parse travis_image_url: %q", travisImageURL)
+		return "", errors.New(msg)
+	}
+
+	u.RawQuery = ""
+	u.Path = strings.Replace(u.Path, ".svg", "", 1)
 
 	return u.String(), nil
 }

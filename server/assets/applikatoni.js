@@ -45,6 +45,10 @@ Branch.prototype.travisImageURL = function() {
   return this.rawJson.travis_image_url;
 }
 
+Branch.prototype.travisImageLink = function() {
+  return this.rawJson.travis_image_link;
+}
+
 $(function() {
   /*
    *  -------------- DETAILS PAGE --------------

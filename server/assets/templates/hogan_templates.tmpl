@@ -9,7 +9,7 @@
       </td>
       <td><a href="<% html_url %>"><% title %></a></td>
       <td><abbr data-livestamp="<% updated_at %>" title="<% updated_at %>"><% updated_at %></abbr></td>
-      <td><img src="<% travis_image_url %>"></td>
+      <td><a href="<% travis_image_link %>"><img src="<% travis_image_url %>"></a></td>
       <td class="table-w-10 text-right">
         <div>
           <button class="btn btn-default btn-block deploy-pull-request" data-pull-request-head-sha="<% head.sha %>" data-pull-request-head-ref="<% head.ref %>">Deploy</button>
@@ -38,7 +38,7 @@
         <%/messageBody%>
       </td>
       <td><abbr data-livestamp="<% updatedAt %>" title="<% updatedAt %>"><% updatedAt %></abbr></td>
-      <td><img src="<% travisImageURL %>"></td>
+      <td><a href="<% travisImageLink %>"><img src="<% travisImageURL %>"></a></td>
       <td class="table-w-10 text-right">
         <div>
           <button class="btn btn-default btn-block deploy-branch" data-branch-sha="<% sha %>" data-branch-name="<% name %>">Deploy</button>
