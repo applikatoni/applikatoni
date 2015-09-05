@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -62,7 +63,11 @@ func (gc *GitHubClient) GetPullRequests(a *models.Application) ([]GitHubPullRequ
 
 	if a.TravisImageURL != "" {
 		for i, _ := range pulls {
-			pulls[i].TravisImageURL = fmt.Sprintf("%s&branch=%s", a.TravisImageURL, pulls[i].Head.Branch)
+			imageURL, err := addBranchTravisURL(a.TravisImageURL, pulls[i].Head.Branch)
+			if err != nil {
+				return nil, err
+			}
+			pulls[i].TravisImageURL = imageURL
 		}
 	}
 
@@ -82,7 +87,11 @@ func (gc *GitHubClient) GetBranches(a *models.Application) ([]GitHubBranch, erro
 		}
 
 		if a.TravisImageURL != "" {
-			branch.TravisImageURL = fmt.Sprintf("%s&branch=%s", a.TravisImageURL, branchName)
+			imageURL, err := addBranchTravisURL(a.TravisImageURL, branchName)
+			if err != nil {
+				return nil, err
+			}
+			branch.TravisImageURL = imageURL
 		}
 
 		branches = append(branches, branch)
@@ -117,4 +126,18 @@ func (gc *GitHubClient) GetDecode(url string, v interface{}) error {
 	}
 
 	return nil
+}
+
+func addBranchTravisURL(travisURL string, branch string) (string, error) {
+	u, err := url.Parse(travisURL)
+	if err != nil {
+		msg := fmt.Sprintf("failed to parse travis_image_url: %q", travisURL)
+		return "", errors.New(msg)
+	}
+
+	q := u.Query()
+	q.Set("branch", branch)
+	u.RawQuery = q.Encode()
+
+	return u.String(), nil
 }
