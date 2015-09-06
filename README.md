@@ -217,7 +217,7 @@ run down of what it's doing.
 ### Sample
 
 Here is a sample `configuration.json` for an application called
-`our-main-application` hosted under
+`our-main-application` with its source code hosted under
 `github.com/shipping-company/our-main-application`.
 
 The application will be deployed to three servers: 
