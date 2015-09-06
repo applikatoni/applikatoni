@@ -71,7 +71,10 @@ Also: there is a lot of pizza involved! 🍕
 * sqlite3
 * goose - [https://bitbucket.org/liamstask/goose/](https://bitbucket.org/liamstask/goose/)
 
-## Building from source
+## Installing using `go get`
+
+        go get github.com/applikatoni/applikatoni/server
+## Cloning and building from sourcee
 
 1. Set up the repository inside your Go workspace:
 
