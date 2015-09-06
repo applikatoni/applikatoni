@@ -460,6 +460,12 @@ func TestGetDailyDigestDeployments(t *testing.T) {
 	targetName := "production"
 	since := time.Now().Add(-24 * time.Hour)
 
+	stmt := `INSERT INTO
+	deployments
+	(user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
+	VALUES
+	(?, ?, ?, ?, ?, ?, ?, ?);`
+
 	existingDeployments := []struct {
 		applicationName string
 		targetName      string
@@ -475,12 +481,6 @@ func TestGetDailyDigestDeployments(t *testing.T) {
 	}
 
 	for _, ed := range existingDeployments {
-		stmt := `INSERT INTO
-		deployments
-		(user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
-		VALUES
-		(?, ?, ?, ?, ?, ?, ?, ?);`
-
 		_, err := db.Exec(stmt, 9999, ed.applicationName, ed.targetName,
 			"f00b4r", "master", "foo", string(ed.state), ed.createdAt)
 		checkErr(t, err)
@@ -498,6 +498,12 @@ func TestFailUnfinishedDeployments(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
+	stmt := `INSERT INTO
+	deployments
+	(user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
+	VALUES
+	(?, ?, ?, ?, ?, ?, ?, ?);`
+
 	states := []models.DeploymentState{
 		models.DEPLOYMENT_NEW,
 		models.DEPLOYMENT_ACTIVE,
@@ -506,12 +512,6 @@ func TestFailUnfinishedDeployments(t *testing.T) {
 	}
 
 	for _, s := range states {
-		stmt := `INSERT INTO
-		deployments
-		(user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
-		VALUES
-		(?, ?, ?, ?, ?, ?, ?, ?);`
-
 		_, err := db.Exec(stmt, 9999, "awesomeDB", "production",
 			"f00b4r", "master", "foo", string(s), time.Now())
 		checkErr(t, err)
