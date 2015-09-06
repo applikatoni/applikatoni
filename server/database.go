@@ -18,7 +18,7 @@ const (
 	deploymentStmt               = `SELECT id, user_id, application_name, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.id = ?`
 	deploymentInsertStmt         = `INSERT INTO deployments (user_id, application_name, target_name, commit_sha, branch, comment, state, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
 	deploymentUpdateStateStmt    = `UPDATE deployments SET state = ? WHERE deployments.id = ?`
-	deploymentFailUnfinishedStmt = `UPDATE deployments SET state = 'failed' WHERE deployments.state = 'new' OR deployments.state = 'active'`
+	deploymentFailUnfinishedStmt = `UPDATE deployments SET state = ? WHERE deployments.state = ? OR deployments.state = ?`
 	applicationDeploymentsStmt   = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.application_name = ? ORDER BY created_at DESC LIMIT ?`
 	logEntryInsertStmt           = `INSERT INTO log_entries (deployment_id, entry_type, origin, message, timestamp, created_at) VALUES (?, ?, ?, ?, ?, ?);`
 	deploymentLogEntriesStmt     = `SELECT id, deployment_id, entry_type, origin, message, timestamp FROM log_entries WHERE log_entries.deployment_id = ? ORDER BY timestamp ASC`
@@ -166,7 +166,9 @@ func getDailyDigestDeployments(db *sql.DB, a *models.Application, targetName str
 }
 
 func failUnfinishedDeployments(db *sql.DB) error {
-	_, err := db.Exec(deploymentFailUnfinishedStmt)
+	_, err := db.Exec(deploymentFailUnfinishedStmt,
+		string(models.DEPLOYMENT_FAILED), string(models.DEPLOYMENT_NEW),
+		string(models.DEPLOYMENT_ACTIVE))
 	return err
 }
 
