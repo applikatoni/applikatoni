@@ -65,6 +65,42 @@ Also: there is a lot of pizza involved! 🍕
 
 5. Start Applikatoni
 
+# Installation
+## Dependencies
+
+* sqlite3
+* goose - [https://bitbucket.org/liamstask/goose/](https://bitbucket.org/liamstask/goose/)
+
+## Building from source
+
+1. Set up the repository inside your Go workspace:
+
+        mkdir -p $GOPATH/src/github.com/applikatoni/
+        cd $GOPATH/src/github.com/applikatoni/
+        git clone git@github.com:applikatoni/applikatoni.git
+        cd applikatoni
+2. Install dependencies:
+
+        go get ./...
+3. Build and run it
+
+        go build -o server && ./server -port=":3000"
+
+# Usage
+
+1. Make sure the database file is setup and migrated:
+
+        go get bitbucket.org/liamstask/goose/cmd/goose
+        vim db/dbconf.yml
+        goose -env="production" up
+2. Create a `configuration.json` file for your needs. See [Configuration](#Configuration) for more information.
+
+        cp configuration_example.json configuration.json
+        vim configuration.json
+3. Start the server:
+
+        ./applikatoni -port=":8080" -db=./db/production.db -conf=./configuration.json
+
 # How it works
 
 Applikatoni is a server with a web-frontend that allows users to deploy specific
@@ -163,44 +199,22 @@ into this:
 
 where `F00B4R` is the commit SHA you selected in the web frontend.
 
-# Dependencies
+# Terminology
 
-* sqlite3
-* goose - [https://bitbucket.org/liamstask/goose/](https://bitbucket.org/liamstask/goose/)
-
-# Installation
-## Building from source
-
-1. Set up the repository inside your Go workspace:
-
-        mkdir -p $GOPATH/src/github.com/applikatoni/
-        cd $GOPATH/src/github.com/applikatoni/
-        git clone git@github.com:applikatoni/applikatoni.git
-        cd applikatoni
-2. Install dependencies:
-
-        go get ./...
-3. Build and run it
-
-        go build -o server && ./server -port=":3000"
-
-# Usage
-
-1. Make sure the database file is setup and migrated:
-
-        go get bitbucket.org/liamstask/goose/cmd/goose
-        vim db/dbconf.yml
-        goose -env="production" up
-2. Create a `configuration.json` file for your needs. See [Configuration](#Configuration) for more information.
-
-        cp configuration_example.json configuration.json
-        vim configuration.json
-3. Start the server:
-
-        ./applikatoni -port=":8080" -db=./db/production.db -conf=./configuration.json
+* `application` - Applikatoni can deploy multiple applications
+* `target` - The target environment of a deployment, e.g.: `production`
+* `host` - Each `target` has one or more `host`s, the servers to which to deploy
+  to. e.g.: `web-application.production.shipping-company.com`
+* `role` - Every `host` of each `target` fulfills different `role`s. What gets
+  executed and when on which `host` depends on the `role`s this host has. e.g.:
+`database-server` or `web-app-server`.
+* `stage` - A deployment consists of on or more stages. A `role` defines on or
+  more `stage`s (by defining `script_templates` for each `stage`). A `stage` can
+  succeed or fail while deploying the application. If a `stage` failed, the
+  deployment stops after this change. All `stage`s are executed synchronously on
+  all `host`s (but in parallel).
 
 # Configuration
-
 ## Requirements
 * a user on the servers you want to deploy your application to with a SSH-Key
 * a GitHub OAuth application ([See here](https://github.com/settings/applications/new))
