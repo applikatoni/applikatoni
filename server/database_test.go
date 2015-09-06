@@ -493,3 +493,43 @@ func TestGetDailyDigestDeployments(t *testing.T) {
 		t.Errorf("getDailyDigestDeployments wrong number of deployments: %d", len(deployments))
 	}
 }
+
+func TestFailUnfinishedDeployments(t *testing.T) {
+	db := newTestDb(t)
+	defer cleanCloseTestDb(db, t)
+
+	states := []models.DeploymentState{
+		models.DEPLOYMENT_NEW,
+		models.DEPLOYMENT_ACTIVE,
+		models.DEPLOYMENT_FAILED,
+		models.DEPLOYMENT_SUCCESSFUL,
+	}
+
+	for _, s := range states {
+		stmt := `INSERT INTO
+		deployments
+		(user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
+		VALUES
+		(?, ?, ?, ?, ?, ?, ?, ?);`
+
+		_, err := db.Exec(stmt, 9999, "awesomeDB", "production",
+			"f00b4r", "master", "foo", string(s), time.Now())
+		checkErr(t, err)
+	}
+
+	err := failUnfinishedDeployments(db)
+	checkErr(t, err)
+
+	var count int
+	err = db.QueryRow("SELECT COUNT(1) FROM deployments WHERE state = 'failed'").Scan(&count)
+	checkErr(t, err)
+	if count != 3 {
+		t.Errorf("wrong count of failed deployments. want=%d, got=%d", 3, count)
+	}
+
+	err = db.QueryRow("SELECT COUNT(1) FROM deployments WHERE state = 'successful'").Scan(&count)
+	checkErr(t, err)
+	if count != 1 {
+		t.Errorf("wrong count of successful deployments. want=%d, got=%d", 1, count)
+	}
+}

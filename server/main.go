@@ -69,6 +69,14 @@ func main() {
 	}
 	defer db.Close()
 
+	// If there are deployments in state 'new'/'active' when booting up
+	// Applikatoni probably crashed with a deployment running. Set these to
+	// 'failed' so we can start other deployments.
+	err = failUnfinishedDeployments(db)
+	if err != nil {
+		log.Fatal("setting unfinished deployments to 'failed' failed", err)
+	}
+
 	oauthCfg = &oauth2.Config{
 		ClientID:     config.GitHubClientId,
 		ClientSecret: config.GitHubClientSecret,

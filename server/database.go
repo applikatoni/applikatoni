@@ -15,17 +15,18 @@ import (
 )
 
 const (
-	deploymentStmt             = `SELECT id, user_id, application_name, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.id = ?`
-	deploymentInsertStmt       = `INSERT INTO deployments (user_id, application_name, target_name, commit_sha, branch, comment, state, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
-	deploymentUpdateStateStmt  = `UPDATE deployments SET state = ? WHERE deployments.id = ?`
-	applicationDeploymentsStmt = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.application_name = ? ORDER BY created_at DESC LIMIT ?`
-	logEntryInsertStmt         = `INSERT INTO log_entries (deployment_id, entry_type, origin, message, timestamp, created_at) VALUES (?, ?, ?, ?, ?, ?);`
-	deploymentLogEntriesStmt   = `SELECT id, deployment_id, entry_type, origin, message, timestamp FROM log_entries WHERE log_entries.deployment_id = ? ORDER BY timestamp ASC`
-	userInsertStmt             = `INSERT INTO users(id, name, access_token, avatar_url, api_token) VALUES(?, ?, ?, ?, ?);`
-	userStmt                   = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE id = ?;`
-	userApiTokenStmt           = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE api_token = ?;`
-	activeDeploymentsStmt      = `SELECT state FROM deployments WHERE target_name = ? AND state = 'active' LIMIT 1;`
-	dailyDigestDeploymentsStmt = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE state = 'successful' AND application_name = ? AND target_name = ? AND created_at > ? ORDER BY created_at ASC;`
+	deploymentStmt               = `SELECT id, user_id, application_name, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.id = ?`
+	deploymentInsertStmt         = `INSERT INTO deployments (user_id, application_name, target_name, commit_sha, branch, comment, state, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
+	deploymentUpdateStateStmt    = `UPDATE deployments SET state = ? WHERE deployments.id = ?`
+	deploymentFailUnfinishedStmt = `UPDATE deployments SET state = 'failed' WHERE deployments.state = 'new' OR deployments.state = 'active'`
+	applicationDeploymentsStmt   = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.application_name = ? ORDER BY created_at DESC LIMIT ?`
+	logEntryInsertStmt           = `INSERT INTO log_entries (deployment_id, entry_type, origin, message, timestamp, created_at) VALUES (?, ?, ?, ?, ?, ?);`
+	deploymentLogEntriesStmt     = `SELECT id, deployment_id, entry_type, origin, message, timestamp FROM log_entries WHERE log_entries.deployment_id = ? ORDER BY timestamp ASC`
+	userInsertStmt               = `INSERT INTO users(id, name, access_token, avatar_url, api_token) VALUES(?, ?, ?, ?, ?);`
+	userStmt                     = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE id = ?;`
+	userApiTokenStmt             = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE api_token = ?;`
+	activeDeploymentsStmt        = `SELECT state FROM deployments WHERE target_name = ? AND state = 'active' LIMIT 1;`
+	dailyDigestDeploymentsStmt   = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE state = 'successful' AND application_name = ? AND target_name = ? AND created_at > ? ORDER BY created_at ASC;`
 )
 
 var ErrDeployInProgress = errors.New("another deployment to target already in progress")
@@ -162,6 +163,11 @@ func getDailyDigestDeployments(db *sql.DB, a *models.Application, targetName str
 	}
 
 	return deployments, nil
+}
+
+func failUnfinishedDeployments(db *sql.DB) error {
+	_, err := db.Exec(deploymentFailUnfinishedStmt)
+	return err
 }
 
 func createLogEntry(db *sql.DB, entry *deploy.LogEntry) error {
