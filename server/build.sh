@@ -3,11 +3,13 @@
 
 set -e
 
-target="applikatoni-$(go env GOOS)-$(go env GOARCH)"
+version=$(cat main.go | grep "VERSION\s*=" | awk '{print $NF}' | sed 's/\"//g')
+target="applikatoni-${version}-$(go env GOOS)-$(go env GOARCH)"
 executable="applikatoni"
 goose_executable=$(which goose)
 current_revision=$(git rev-parse HEAD)
 
+rm -rf ./builds/$target
 mkdir ./builds/$target
 
 go build -o ./builds/$target/$executable ./ || exit 1
@@ -19,9 +21,9 @@ cp -R ./db/migrations ./builds/$target/db/
 cp ./configuration_example.json ./builds/$target/
 cp -R ./assets ./builds/$target/
 cp ../LICENSE ./builds/$target/
-cp ./README.md ./builds/$target/
+cp ../README.md ./builds/$target/
 
-echo ${current_revision} >> ./builds/$target/VERSION
+echo ${version} >> ./builds/$target/VERSION
 
 cp ${goose_executable} ./builds/$target/
 

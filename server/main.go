@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -21,7 +22,10 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const VERSION = "1.0.0"
+
 var (
+	outputVersion         = flag.Bool("v", false, "output the version of Applikatoni")
 	configurationFilePath = flag.String("conf", "configuration.json", "path to configuration file")
 	port                  = flag.String("port", ":8080", "port to listen on")
 	databasePath          = flag.String("db", "./db/development.db", "path to sqlite3 database file")
@@ -51,6 +55,11 @@ var (
 
 func main() {
 	flag.Parse()
+
+	if *outputVersion {
+		fmt.Println(VERSION)
+		return
+	}
 
 	var err error
 	config, err = readConfiguration(*configurationFilePath)
