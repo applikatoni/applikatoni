@@ -74,21 +74,6 @@ Also: there is a lot of pizza involved! 🍕
 ## Installing using `go get`
 
         go get github.com/applikatoni/applikatoni/server
-## Cloning and building from sourcee
-
-1. Set up the repository inside your Go workspace:
-
-        mkdir -p $GOPATH/src/github.com/applikatoni/
-        cd $GOPATH/src/github.com/applikatoni/
-        git clone git@github.com:applikatoni/applikatoni.git
-        cd applikatoni
-2. Install dependencies:
-
-        go get ./...
-3. Build and run it
-
-        go build -o server && ./server -port=":3000"
-
 # Usage
 
 1. Make sure the database file is setup and migrated:
