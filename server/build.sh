@@ -22,6 +22,7 @@ cp ./configuration_example.json ./builds/$target/
 cp -R ./assets ./builds/$target/
 cp ../LICENSE ./builds/$target/
 cp ../README.md ./builds/$target/
+cp ../CHANGELOG.md ./builds/$target/
 
 echo ${version} >> ./builds/$target/VERSION
 
