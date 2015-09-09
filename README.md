@@ -71,6 +71,11 @@ Also: there is a lot of pizza involved! 🍕
 * sqlite3
 * goose - [https://bitbucket.org/liamstask/goose/](https://bitbucket.org/liamstask/goose/)
 
+## Download a packaged version
+
+See the [Releases](https://github.com/applikatoni/applikatoni/releases) section
+and download a packaged version of Applikatoni.
+
 ## Installing using `go get`
 
         go get github.com/applikatoni/applikatoni/server
