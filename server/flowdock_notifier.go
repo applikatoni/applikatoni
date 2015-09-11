@@ -59,7 +59,7 @@ func NotifyFlowdock(deploymentId int) {
 	}
 
 	params := url.Values{
-		"event":   {"status"},
+		"event":   {"message"},
 		"content": {summary},
 		"tags":    {"deploy,applikatoni"},
 	}
