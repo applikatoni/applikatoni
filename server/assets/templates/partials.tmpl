@@ -1,5 +1,5 @@
 {{define "deploymentsTable"}}
-  {{ $applicationName := .Application.Name }}
+  {{ $application := .Application }}
   <table class="table table-condensed">
     <thead>
       <tr>
@@ -21,11 +21,11 @@
         </td>
         <td>{{.TargetName}}</td>
         <td>
-          <a href="/{{$applicationName}}/deployments/{{.Id}}">
+          <a href="/{{$application.Name}}/deployments/{{.Id}}">
             {{fmtDeploymentState .State}}
           </a>
         </td>
-        <td>{{fmtCommit .}}</td>
+        <td>{{fmtCommit $application .}}</td>
         <td>
           <p class="clean monospace deployment-comment">
           {{newlineToBreak .Comment}}
@@ -33,7 +33,7 @@
         </td>
         <td><abbr data-livestamp="{{.CreatedAt.Unix}}" title="{{.CreatedAt}}">{{.CreatedAt}}</abbr></td>
         <td class="table-w-10 text-right">
-          <a href="/{{$applicationName}}/deployments/{{.Id}}" class="btn btn-block btn-default">View</a>
+          <a href="/{{$application.Name}}/deployments/{{.Id}}" class="btn btn-block btn-default">View</a>
         </td>
       </tr>
       {{end}}

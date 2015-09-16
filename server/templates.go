@@ -11,13 +11,19 @@ import (
 	"github.com/applikatoni/applikatoni/models"
 )
 
-func fmtCommit(d *models.Deployment) template.HTML {
+func commitLink(a *models.Application, sha string) string {
+	return fmt.Sprintf("https://github.com/%s/%s/commit/%s",
+		a.GitHubOwner, a.GitHubRepo, sha)
+}
+
+func fmtCommit(a *models.Application, d *models.Deployment) template.HTML {
 	sha := d.CommitSha[:6]
+	href := commitLink(a, d.CommitSha)
 
 	if d.Branch == "" {
-		return template.HTML("<code>" + sha + "</code>")
+		return template.HTML("<a href=\"" + href + "\"><code>" + sha + "</code></a>")
 	} else {
-		return template.HTML("<code>" + sha + " (" + d.Branch + ")</code>")
+		return template.HTML("<a href=\"" + href + "\"><code>" + sha + " (" + d.Branch + ")</code></a>")
 	}
 }
 
