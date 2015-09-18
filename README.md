@@ -487,10 +487,10 @@ contributing:
 Here is a great explanation of how to handle GitHub forks and Go import paths:
 [Contributing to Open Source Git Repositories in Go](https://splice.com/blog/contributing-open-source-git-repositories-go/).
 
-Make sure that you have the dependencies installed. See [Installation](#Installation).
+Make sure that you have the dependencies installed. See [Installation](#installation).
 
 To get the tests running locally, you have to make sure that your test database
-is migrated to the newest version. See [Testing](#Testing).
+is migrated to the newest version. See [Testing](#testing).
 
 Before sending a pull request, make sure that the tests are green and the build
 runs fine:
