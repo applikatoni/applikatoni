@@ -472,11 +472,42 @@ go test ./...
 
 # Contributing
 
-All contributions are welcome! Create a fork, a new branch and send a pull
-request!
+All contributions are welcome! Is the documentation lacking something? Did you
+find a bug? Do you have a question about how Applikatoni works? Open a issue!
 
-Is the documentation lacking something? Did you find a bug? Do you have a
-question about how Applikatoni works? Open a issue!
+If you want to contribute code to Applikatoni, use the standard GitHub model of
+contributing:
+
+1. Fork the repository
+2. Create a branch in which you'll work (e.g. `config_validation`)
+3. Make your commits in this branch
+4. Add yourself to `CHANGELOG.md`
+5. Send a pull request to merge your branch into the master branch
+
+Here is a great explanation of how to handle GitHub forks and Go import paths:
+[Contributing to Open Source Git Repositories in Go](https://splice.com/blog/contributing-open-source-git-repositories-go/).
+
+Make sure that you have the dependencies installed. See [Installation](#Installation).
+
+To get the tests running locally, you have to make sure that your test database
+is migrated to the newest version. See [Testing](#Testing).
+
+Before sending a pull request, make sure that the tests are green and the build
+runs fine:
+
+1. `go test ./...`
+2. `cd server && go build -o applikatoni .`
+
+Also, make sure you run `go fmt` before committing changes.
+
+Then send a pull request. If any of this doesn't work and you don't know why:
+send a pull request (or open a issue) and we'll see what we can do!
+
+If you want to contribute and don't know where to start, check out the issues
+tagged with [help wanted](https://github.com/applikatoni/applikatoni/labels/help%20wanted).
+
+If you're looking for easy issues, look no further than the issues tagged as
+[easy](https://github.com/applikatoni/applikatoni/labels/easy).
 
 # Is it production ready?
 
