@@ -498,7 +498,11 @@ runs fine:
 1. `go test ./...`
 2. `cd server && go build -o applikatoni .`
 
-Also, make sure you run `go fmt` before committing changes.
+Make sure you run `go fmt` before committing changes!
+
+Should you add a test? It depends. If it's easy to do: by all means, go ahead
+and do it! But especially the code in the `server` package is not that testable,
+so I'd understand if you won't add a test.
 
 Then send a pull request. If any of this doesn't work and you don't know why:
 send a pull request (or open a issue) and we'll see what we can do!
