@@ -199,6 +199,7 @@ func TestGetLastTargetDeployment(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
+	app := &models.Application{Name: "app"}
 	deployments := []*models.Deployment{
 		{
 			UserId:          1,
@@ -224,6 +225,14 @@ func TestGetLastTargetDeployment(t *testing.T) {
 			ApplicationName: "app",
 			TargetName:      "prod",
 		},
+		{
+			UserId:          1,
+			CommitSha:       "f133742",
+			Branch:          "master",
+			Comment:         "two",
+			ApplicationName: "not-app",
+			TargetName:      "prod",
+		},
 	}
 
 	for _, d := range deployments {
@@ -231,7 +240,7 @@ func TestGetLastTargetDeployment(t *testing.T) {
 		checkErr(t, err)
 	}
 
-	last, err := getLastTargetDeployment(db, "prod")
+	last, err := getLastTargetDeployment(db, app, "prod")
 	checkErr(t, err)
 
 	if last == nil {
@@ -242,7 +251,7 @@ func TestGetLastTargetDeployment(t *testing.T) {
 			deployments[0].Id, last.Id)
 	}
 
-	last, err = getLastTargetDeployment(db, "staging")
+	last, err = getLastTargetDeployment(db, app, "staging")
 	checkErr(t, err)
 
 	if last == nil {

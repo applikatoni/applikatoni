@@ -19,7 +19,7 @@ const (
 	deploymentInsertStmt         = `INSERT INTO deployments (user_id, application_name, target_name, commit_sha, branch, comment, state, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`
 	deploymentUpdateStateStmt    = `UPDATE deployments SET state = ? WHERE deployments.id = ?`
 	deploymentFailUnfinishedStmt = `UPDATE deployments SET state = ? WHERE deployments.state = ? OR deployments.state = ?`
-	lastTargetDeploymentStmt     = `SELECT id, user_id, application_name, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.target_name = ? ORDER BY created_at ASC LIMIT 1`
+	lastTargetDeploymentStmt     = `SELECT id, user_id, application_name, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.application_name = ? AND deployments.target_name = ? ORDER BY created_at ASC LIMIT 1`
 	applicationDeploymentsStmt   = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE deployments.application_name = ? ORDER BY created_at DESC LIMIT ?`
 	logEntryInsertStmt           = `INSERT INTO log_entries (deployment_id, entry_type, origin, message, timestamp, created_at) VALUES (?, ?, ?, ?, ?, ?);`
 	deploymentLogEntriesStmt     = `SELECT id, deployment_id, entry_type, origin, message, timestamp FROM log_entries WHERE log_entries.deployment_id = ? ORDER BY timestamp ASC`
@@ -125,8 +125,8 @@ func getDeployment(db *sql.DB, id int) (*models.Deployment, error) {
 	return queryDeploymentRow(db, deploymentStmt, id)
 }
 
-func getLastTargetDeployment(db *sql.DB, targetName string) (*models.Deployment, error) {
-	return queryDeploymentRow(db, lastTargetDeploymentStmt, targetName)
+func getLastTargetDeployment(db *sql.DB, a *models.Application, targetName string) (*models.Deployment, error) {
+	return queryDeploymentRow(db, lastTargetDeploymentStmt, a.Name, targetName)
 }
 
 func getDailyDigestDeployments(db *sql.DB, a *models.Application, targetName string, since time.Time) ([]*models.Deployment, error) {
