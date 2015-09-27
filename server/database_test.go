@@ -59,6 +59,7 @@ func buildUser(id int, name string) *models.User {
 func checkErr(t *testing.T, err error) {
 	if err != nil {
 		t.Error(err)
+		t.FailNow()
 	}
 }
 
