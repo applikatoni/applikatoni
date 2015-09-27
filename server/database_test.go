@@ -194,6 +194,65 @@ func TestGetDeployment(t *testing.T) {
 	}
 }
 
+func TestGetLastTargetDeployment(t *testing.T) {
+	db := newTestDb(t)
+	defer cleanCloseTestDb(db, t)
+
+	deployments := []*models.Deployment{
+		{
+			UserId:          1,
+			CommitSha:       "f133742",
+			Branch:          "master",
+			Comment:         "one",
+			ApplicationName: "app",
+			TargetName:      "prod",
+		},
+		{
+			UserId:          1,
+			CommitSha:       "f133743",
+			Branch:          "master",
+			Comment:         "one-staging",
+			ApplicationName: "app",
+			TargetName:      "staging",
+		},
+		{
+			UserId:          1,
+			CommitSha:       "f133742",
+			Branch:          "master",
+			Comment:         "two",
+			ApplicationName: "app",
+			TargetName:      "prod",
+		},
+	}
+
+	for _, d := range deployments {
+		err := createDeployment(db, d)
+		checkErr(t, err)
+	}
+
+	last, err := getLastTargetDeployment(db, "prod")
+	checkErr(t, err)
+
+	if last == nil {
+		t.Errorf("returned deployment is nil")
+	}
+	if last.Id != deployments[0].Id {
+		t.Errorf("wrong last deployment id. expected=%d, got=%d",
+			deployments[0].Id, last.Id)
+	}
+
+	last, err = getLastTargetDeployment(db, "staging")
+	checkErr(t, err)
+
+	if last == nil {
+		t.Errorf("returned deployment is nil")
+	}
+	if last.Id != deployments[1].Id {
+		t.Errorf("wrong last deployment id. expected=%d, got=%d",
+			deployments[1].Id, last.Id)
+	}
+}
+
 func TestCreateLogEntry(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
