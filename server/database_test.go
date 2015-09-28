@@ -199,67 +199,88 @@ func TestGetLastTargetDeployment(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
+	stmt := `INSERT INTO
+	deployments (user_id, application_name, target_name, commit_sha, branch, comment, state, created_at)
+	VALUES
+	(?, ?, ?, ?, ?, ?, ?, ?);`
+
+	target := "production"
+	otherTarget := "staging"
 	app := &models.Application{Name: "app"}
-	deployments := []*models.Deployment{
+	deployments := []struct {
+		applicationName string
+		targetName      string
+		createdAt       time.Time
+		state           models.DeploymentState
+		comment         string
+	}{
 		{
-			UserId:          1,
-			CommitSha:       "f133742",
-			Branch:          "master",
-			Comment:         "one",
-			ApplicationName: "app",
-			TargetName:      "prod",
+			app.Name,
+			target,
+			time.Now().Add(-2 * time.Hour),
+			models.DEPLOYMENT_SUCCESSFUL,
+			"first",
 		},
 		{
-			UserId:          1,
-			CommitSha:       "f133743",
-			Branch:          "master",
-			Comment:         "one-staging",
-			ApplicationName: "app",
-			TargetName:      "staging",
+			"other-app",
+			target,
+			time.Now().Add(-1 * time.Hour),
+			models.DEPLOYMENT_SUCCESSFUL,
+			"other-app deployment",
 		},
 		{
-			UserId:          1,
-			CommitSha:       "f133742",
-			Branch:          "master",
-			Comment:         "two",
-			ApplicationName: "app",
-			TargetName:      "prod",
+			app.Name,
+			target,
+			time.Now().Add(-45 * time.Minute),
+			models.DEPLOYMENT_SUCCESSFUL,
+			"last successful",
 		},
 		{
-			UserId:          1,
-			CommitSha:       "f133742",
-			Branch:          "master",
-			Comment:         "two",
-			ApplicationName: "not-app",
-			TargetName:      "prod",
+			app.Name,
+			otherTarget,
+			time.Now().Add(-30 * time.Minute),
+			models.DEPLOYMENT_SUCCESSFUL,
+			"last successful other target",
+		},
+		{
+			app.Name,
+			target,
+			time.Now().Add(-15 * time.Minute),
+			models.DEPLOYMENT_FAILED,
+			"last failed",
 		},
 	}
 
 	for _, d := range deployments {
-		err := createDeployment(db, d)
+		_, err := db.Exec(stmt, 9999, d.applicationName, d.targetName,
+			"SH4AAA", "master", d.comment, string(d.state), d.createdAt)
 		checkErr(t, err)
 	}
 
-	last, err := getLastTargetDeployment(db, app, "prod")
-	checkErr(t, err)
+	last, err := getLastTargetDeployment(db, app, target)
+	if err != nil {
+		t.Error(err)
+	}
+
+	if last == nil {
+		t.Error("returned deployment is nil")
+	}
+	if last.Comment != "last successful" {
+		t.Errorf("wrong last deployment comment. expected=%s, got=%s",
+			"last successful", last.Comment)
+	}
+
+	last, err = getLastTargetDeployment(db, app, otherTarget)
+	if err != nil {
+		t.Error(err)
+	}
 
 	if last == nil {
 		t.Errorf("returned deployment is nil")
 	}
-	if last.Id != deployments[0].Id {
-		t.Errorf("wrong last deployment id. expected=%d, got=%d",
-			deployments[0].Id, last.Id)
-	}
-
-	last, err = getLastTargetDeployment(db, app, "staging")
-	checkErr(t, err)
-
-	if last == nil {
-		t.Errorf("returned deployment is nil")
-	}
-	if last.Id != deployments[1].Id {
-		t.Errorf("wrong last deployment id. expected=%d, got=%d",
-			deployments[1].Id, last.Id)
+	if last.Comment != "last successful other target" {
+		t.Errorf("wrong last deployment comment. expected=%s, got=%s",
+			"last successful other target", last.Comment)
 	}
 }
 
