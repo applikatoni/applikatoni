@@ -141,6 +141,7 @@ func main() {
 	r.HandleFunc("/{application}/deployments/{deploymentId}/kill", requireAuthorizedUser(killDeploymentHandler)).Methods("POST")
 	r.HandleFunc("/{application}/pulls", requireAuthorizedUser(pullRequestsHandler)).Methods("GET")
 	r.HandleFunc("/{application}/branches", requireAuthorizedUser(branchesHandler)).Methods("GET")
+	r.HandleFunc("/{application}/diff", requireAuthorizedUser(diffHandler)).Methods("GET")
 	r.HandleFunc("/{application}/toni", requireAuthorizedUser(toniConfigurationHandler))
 	r.HandleFunc("/{application}", requireAuthorizedUser(applicationHandler))
 

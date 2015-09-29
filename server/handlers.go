@@ -146,6 +146,49 @@ func branchesHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+func diffHandler(w http.ResponseWriter, r *http.Request) {
+	currentUser := getCurrentUser(r)
+	application := getCurrentApplication(r)
+
+	targetName := r.URL.Query().Get("target")
+	sha := r.URL.Query().Get("sha")
+
+	if targetName == "" || sha == "" {
+		http.Error(w, "target or sha missing", 422)
+		return
+	}
+
+	d, err := getLastTargetDeployment(db, application, targetName)
+	if err != nil {
+		log.Println("getLastTargetDeployment failed", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	if d == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(204)
+		return
+	}
+
+	ghClient := NewGitHubClient(currentUser)
+	diff, err := ghClient.Compare(application, d.CommitSha, sha)
+	if err != nil {
+		log.Println("error loading diff from github", err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	js, err := json.Marshal(diff)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
+	return
+}
+
 func createDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := getCurrentUser(r)
 	application := getCurrentApplication(r)
