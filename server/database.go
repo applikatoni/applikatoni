@@ -359,6 +359,9 @@ func queryDeploymentRow(db *sql.DB, query string, args ...interface{}) (*models.
 
 	err := db.QueryRow(query, args...).Scan(&d.Id, &d.UserId, &d.ApplicationName,
 		&d.TargetName, &d.CommitSha, &d.Branch, &d.Comment, &state, &d.CreatedAt)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
 	if err != nil {
 		return nil, err
 	}

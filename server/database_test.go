@@ -282,6 +282,14 @@ func TestGetLastTargetDeployment(t *testing.T) {
 		t.Errorf("wrong last deployment comment. expected=%s, got=%s",
 			"last successful other target", last.Comment)
 	}
+
+	last, err = getLastTargetDeployment(db, app, "does not exist")
+	if err != nil {
+		t.Error(err)
+	}
+	if last != nil {
+		t.Errorf("got a deployment. expected none")
+	}
 }
 
 func TestCreateLogEntry(t *testing.T) {
