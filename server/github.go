@@ -15,6 +15,17 @@ import (
 
 const gitHubAPI = "https://api.github.com"
 
+type GitHubCommit struct {
+	Author *models.User `json:"author"`
+	Sha    string       `json:"sha"`
+	Commit struct {
+		Message   string `json:"message"`
+		Committer struct {
+			ComittedAt time.Time `json:"date"`
+		} `json:"committer"`
+	} `json:"commit"`
+}
+
 type GitHubPullRequest struct {
 	Id        int64        `json:"id"`
 	Url       string       `json:"html_url"`
@@ -31,19 +42,18 @@ type GitHubPullRequest struct {
 }
 
 type GitHubBranch struct {
-	Name          string `json:"name"`
-	CurrentCommit struct {
-		Author *models.User `json:"author"`
-		Sha    string       `json:"sha"`
-		Commit struct {
-			Message   string `json:"message"`
-			Committer struct {
-				ComittedAt time.Time `json:"date"`
-			} `json:"committer"`
-		} `json:"commit"`
-	} `json:"commit"`
-	TravisImageURL  string `json:"travis_image_url"`
-	TravisImageLink string `json:"travis_image_link"`
+	Name            string       `json:"name"`
+	CurrentCommit   GitHubCommit `json:"commit"`
+	TravisImageURL  string       `json:"travis_image_url"`
+	TravisImageLink string       `json:"travis_image_link"`
+}
+
+type GitHubDiff struct {
+	GitHubCompareURL string         `json:"html_url"`
+	Status           string         `json:"status"`
+	AheadBy          int            `json:"ahead_by"`
+	BehindBy         int            `json:"behind_by"`
+	Commits          []GitHubCommit `json:"commits"`
 }
 
 type GitHubClient struct{ *http.Client }
@@ -117,6 +127,19 @@ func (gc *GitHubClient) GetBranches(a *models.Application) ([]GitHubBranch, erro
 	}
 
 	return branches, nil
+}
+
+func (gc *GitHubClient) Compare(a *models.Application, oldSha, newSha string) (*GitHubDiff, error) {
+	diff := &GitHubDiff{}
+	url := fmt.Sprintf("%s/repos/%s/%s/compare/%s...%s",
+		gitHubAPI, a.GitHubOwner, a.GitHubRepo, oldSha, newSha)
+
+	err := gc.GetDecode(url, diff)
+	if err != nil {
+		return nil, err
+	}
+
+	return diff, nil
 }
 
 func (gc *GitHubClient) UpdateUser(u *models.User) error {
