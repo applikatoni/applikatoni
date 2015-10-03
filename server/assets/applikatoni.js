@@ -56,6 +56,7 @@ $(function() {
 
   var hoganOptions = {delimiters: '<% %>'};
 
+  var diffTemplate                      = Hogan.compile($('#diffTemplate').text(), hoganOptions);
   var pullTemplate                      = Hogan.compile($('#pullRequestTemplate').text(), hoganOptions);
   var branchTemplate                    = Hogan.compile($('#branchTemplate').text(), hoganOptions);
   var errorMessageTemplate              = Hogan.compile($('#errorMessageTemplate').text(), hoganOptions);
@@ -166,7 +167,7 @@ $(function() {
       var commitSha = $(this).data('pull-request-head-sha');
       var branch    = $(this).data('pull-request-head-ref');
 
-      $('input[name=commitsha]').val(commitSha);
+      $('input[name=commitsha]').val(commitSha).trigger('change');
       $('input[name=branch]').val(branch);
     });
   };
@@ -199,7 +200,7 @@ $(function() {
       var commitSha = $(this).data('branch-sha');
       var branch    = $(this).data('branch-name');
 
-      $('input[name=commitsha]').val(commitSha);
+      $('input[name=commitsha]').val(commitSha).trigger('change');
       $('input[name=branch]').val(branch);
     });
 
@@ -239,6 +240,7 @@ $(function() {
     allStagesGroups.remove();
     newStagesGroup.removeClass('hidden');
     stagesContainer.append(newStagesGroup);
+    $('input[name=commitsha]').trigger('change');
   });
 
   var showAdvancedToggle = $('.js-toggle-advanced');
@@ -246,6 +248,37 @@ $(function() {
     e.preventDefault();
 
     stagesContainer.toggleClass('hidden');
+  });
+
+  var addLoadedDiff = function(diffData) {
+    if (diffData) {
+      $('.js-diff-container').empty().append(diffTemplate.render(diffData));
+    } else {
+      $('.js-diff-container').empty();
+    }
+  };
+
+  var showDiffError = function(xhr, textstatus, error) {
+    var rendered = errorMessageTemplate.render({
+      message: 'Something went wrong while fetching the diff from GitHub'
+    });
+    $('.js-diff-container').empty().append(rendered);
+  };
+
+  $('input[name=commitsha]').on('change keyup paste', function() {
+    var sha = $(this).val();
+    if (sha.length < 40) return;
+
+    var selectedTarget = $('select[name="target"]').val();
+    var diffPath = $('form.new-deployment').data('diff-path');
+    var url = diffPath + '?' + $.param({sha: sha, target: selectedTarget});
+
+    $.ajax({
+      url: url,
+      dataType: 'json',
+      success: addLoadedDiff,
+      error: showDiffError
+    });
   });
 
   $('.js-submit-deployment').clickSpark({

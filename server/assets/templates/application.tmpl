@@ -14,15 +14,14 @@
   </div>
 
   <div class="panel-body">
-    <form role="form" action="/{{.Application.Name}}/deployments" method="POST" class="new-deployment">
+    <form role="form" action="/{{.Application.Name}}/deployments" method="POST" class="new-deployment" data-diff-path="/{{.Application.Name}}/diff">
 
       <div class="row">
 
         <div class="col-md-5">
           <div class="form-group">
-            <textarea name="comment" class="form-control" rows="3" placeholder="What are you deploying?"></textarea>
+            <textarea name="comment" class="form-control js-deployment-comment" rows="3" placeholder="What are you deploying?"></textarea>
           </div>
-
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-lg btn-block js-submit-deployment">Deploy!</button>
           </div>
@@ -86,6 +85,12 @@
           </div>
         </div>
 
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="js-diff-container">
+          </div>
+        </div>
       </div>
     </form>
   </div>
