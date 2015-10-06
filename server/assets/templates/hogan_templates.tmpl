@@ -21,23 +21,25 @@
   <script id="branchTemplate" type="text/template">
     <tr>
       <td class="table-w-5">
-        <img src="<% userAvatarUrl %>" class="img-circle avatar" title="<% userName %>">
+        <img src="<% commit.userAvatarUrl %>" class="img-circle avatar" title="<% commit.userName %>">
       </td>
       <td class="table-w-10">
         <code><% name %></code>
       </td>
       <td>
-        <div class="branch-cell-sha">Commit SHA: <% shortSha %></div>
-        <%#messageBody%>
-          <div class="branch-cell-message-title"><% message %></div>
-          <a href="#" class="message-toggler" data-action="toggle-full-message">...</a>
-          <pre class="hidden message-body"><% messageBody %></pre>
-        <%/messageBody%>
-        <%^messageBody%>
-          <div class="branch-cell-message-title"><% message %></div>
-        <%/messageBody%>
+        <div class="branch-cell-sha">Commit SHA: <% commit.shortSha %></div>
+        <%#commit%>
+          <%#messageBody%>
+            <div class="branch-cell-message-title"><% message %></div>
+            <a href="#" class="message-toggler" data-action="toggle-full-message">...</a>
+            <pre class="hidden message-body"><% messageBody %></pre>
+          <%/ messageBody%>
+          <%^ messageBody%>
+            <div class="branch-cell-message-title"><% message %></div>
+          <%/ messageBody%>
+        <%/commit%>
       </td>
-      <td><abbr data-livestamp="<% updatedAt %>" title="<% updatedAt %>"><% updatedAt %></abbr></td>
+      <td><abbr data-livestamp="<% updatedAt %>" title="<% updatedAt %>"><% commit.updatedAt %></abbr></td>
       <td><a href="<% travisImageLink %>"><img src="<% travisImageURL %>"></a></td>
       <td class="table-w-10 text-right">
         <div>

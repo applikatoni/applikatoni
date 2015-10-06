@@ -1,18 +1,14 @@
-function Branch(branchJson) {
-  this.rawJson = branchJson;
-  this.messageLines = this.rawJson.commit.commit.message.split("\n");
+function Commit(commitJson) {
+  this.rawJson = commitJson;
+  this.messageLines = this.rawJson.commit.message.split("\n");
 }
 
-Branch.prototype.name = function() {
-  return this.rawJson.name;
-};
-
-Branch.prototype.message = function() {
+Commit.prototype.message = function() {
   var header = this.messageLines[0];
   return header;
 };
 
-Branch.prototype.messageBody = function() {
+Commit.prototype.messageBody = function() {
   if (this.messageLines.length < 2) {
     return false;
   } else {
@@ -20,34 +16,43 @@ Branch.prototype.messageBody = function() {
   }
 };
 
-Branch.prototype.sha = function() {
-  return this.rawJson.commit.sha;
+Commit.prototype.sha = function() {
+  return this.rawJson.sha;
 };
 
-Branch.prototype.shortSha = function() {
+Commit.prototype.shortSha = function() {
   var longSha = this.sha();
   return longSha.slice(0, 6);
 };
 
-Branch.prototype.userName = function() {
-  return this.rawJson.commit.author.login;
+Commit.prototype.userName = function() {
+  return this.rawJson.author.login;
 };
 
-Branch.prototype.userAvatarUrl = function() {
-  return this.rawJson.commit.author.avatar_url;
+Commit.prototype.userAvatarUrl = function() {
+  return this.rawJson.author.avatar_url;
 };
 
-Branch.prototype.updatedAt = function() {
-  return this.rawJson.commit.commit.committer.date;
+Commit.prototype.updatedAt = function() {
+  return this.rawJson.commit.committer.date;
 }
+
+function Branch(branchJson) {
+  this.rawJson = branchJson;
+  this.commit = new Commit(this.rawJson.commit);
+}
+
+Branch.prototype.name = function() {
+  return this.rawJson.name;
+};
 
 Branch.prototype.travisImageURL = function() {
   return this.rawJson.travis_image_url;
-}
+};
 
 Branch.prototype.travisImageLink = function() {
   return this.rawJson.travis_image_link;
-}
+};
 
 $(function() {
   /*
