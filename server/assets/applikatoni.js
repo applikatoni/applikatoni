@@ -54,6 +54,30 @@ Branch.prototype.travisImageLink = function() {
   return this.rawJson.travis_image_link;
 };
 
+function Diff(diffJson) {
+  var commits = [];
+
+  diffJson.commits.forEach(function(commitJson) {
+    var commit = new Commit(commitJson);
+    commits.push(commit);
+  });
+
+  this.rawJson = diffJson;
+  this.commits = commits;
+};
+
+Diff.prototype.htmlURL = function() {
+  return this.rawJson.html_url;
+};
+
+Diff.prototype.aheadBy = function() {
+  return this.rawJson.ahead_by;
+}
+
+Diff.prototype.behindBy = function() {
+  return this.rawJson.behind_by;
+}
+
 $(function() {
   /*
    *  -------------- DETAILS PAGE --------------
@@ -257,7 +281,8 @@ $(function() {
 
   var addLoadedDiff = function(diffData) {
     if (diffData) {
-      $('.js-diff-container').empty().append(diffTemplate.render(diffData));
+      var diff = new Diff(diffData);
+      $('.js-diff-container').empty().append(diffTemplate.render(diff));
     } else {
       $('.js-diff-container').empty();
     }

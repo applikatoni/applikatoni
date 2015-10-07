@@ -151,22 +151,22 @@
   <script id="diffTemplate" type="text/template">
     <div class="panel panel-info">
       <div class="panel-heading">
-        <a href="<% html_url %>">See diff on GitHub</a>
+        <a href="<% htmlURL %>">See diff on GitHub</a>
       </div>
-        <table class="table table-condensed">
-        <tbody>
-          <%#commits%>
-            <tr>
-              <td class="table-w-5">
-                <img class="img-circle avatar" src="<% author.avatar_url%>">
-              </td>
-              <td>
-                <% commit.message %>
-              </td>
-            </tr>
-          <%/commits%>
-          </tbody>
-        </table>
+      <table class="table table-condensed">
+      <tbody>
+        <%#commits%>
+          <tr>
+            <td class="table-w-5">
+              <img class="img-circle avatar" src="<% userAvatarUrl %>">
+            </td>
+            <td>
+              <% message %>
+            </td>
+          </tr>
+        <%/commits%>
+        </tbody>
+      </table>
     </div>
   </script>
 {{end}}
