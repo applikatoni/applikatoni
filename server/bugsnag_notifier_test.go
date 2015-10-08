@@ -10,7 +10,12 @@ import (
 
 func TestNotifyBugsnag(t *testing.T) {
 	target := &models.Target{Name: "staging", BugsnagApiKey: "APIKEY"}
-	application := &models.Application{GitHubRepo: "flincOnRails"}
+
+	application := &models.Application{
+		GitHubOwner: "shipping-co",
+		GitHubRepo:  "main-web-app",
+	}
+
 	deployment := &models.Deployment{
 		TargetName: target.Name,
 		Branch:     "master",
@@ -23,7 +28,7 @@ func TestNotifyBugsnag(t *testing.T) {
 	}{
 		{"apiKey", target.BugsnagApiKey},
 		{"releaseStage", target.Name},
-		{"repository", application.GitHubRepo},
+		{"repository", application.RepositoryURL()},
 		{"branch", deployment.Branch},
 		{"revision", deployment.CommitSha},
 	}

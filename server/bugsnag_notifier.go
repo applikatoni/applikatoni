@@ -45,7 +45,7 @@ func SendBugsnagRequest(endpoint string, d *models.Deployment, t *models.Target,
 	params := url.Values{
 		"apiKey":       {t.BugsnagApiKey},
 		"releaseStage": {d.TargetName},
-		"repository":   {a.GitHubRepo},
+		"repository":   {a.RepositoryURL()},
 		"branch":       {d.Branch},
 		"revision":     {d.CommitSha},
 	}

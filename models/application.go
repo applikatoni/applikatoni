@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 type Application struct {
 	Name                 string    `json:"name"`
 	Targets              []*Target `json:"targets"`
@@ -14,6 +16,10 @@ type Application struct {
 
 func (a *Application) IsReader(userName string) bool {
 	return isInList(userName, a.ReadUsernames)
+}
+
+func (a *Application) RepositoryURL() string {
+	return fmt.Sprintf("git@github.com:%s/%s.git", a.GitHubOwner, a.GitHubRepo)
 }
 
 // TODO: we can do this in O(1) if we use a map instead of slice for usernames
