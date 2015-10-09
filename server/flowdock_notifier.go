@@ -67,7 +67,11 @@ func NotifyFlowdock(deploymentId int) {
 	resp, err := http.PostForm(target.FlowdockEndpoint, params)
 
 	if err != nil || resp.StatusCode != 201 {
-		log.Printf("Error while notifying Flowdock about deployment of %v on %v, %v! err: %s, resp: %s\n", deployment.ApplicationName, deployment.TargetName, deployment.CommitSha, err, resp)
+		log.Printf("Error while notifying Flowdock about deployment of %v on %v, %v! err: %s, resp: %s\n", deployment.ApplicationName,
+			deployment.TargetName,
+			deployment.CommitSha,
+			err,
+			resp.Status)
 	} else {
 		log.Printf("Successfully notified Flowdock about deployment of %v on %v, %v!\n", deployment.ApplicationName, deployment.TargetName, deployment.CommitSha)
 	}

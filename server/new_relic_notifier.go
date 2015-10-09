@@ -70,7 +70,12 @@ func SendNewRelicRequest(endpoint string, d *models.Deployment, t *models.Target
 	resp, err := client.Do(req)
 
 	if err != nil || resp.StatusCode != 201 {
-		log.Printf("Error while notifying New Relic about deployment of %v on %v, %v! err: %s, resp: %s\n", d.ApplicationName, d.TargetName, d.CommitSha, err, resp)
+		log.Printf("Error while notifying New Relic about deployment of %v on %v, %v! err: %s, resp: %s\n",
+			d.ApplicationName,
+			d.TargetName,
+			d.CommitSha,
+			err,
+			resp.Status)
 		return
 	}
 

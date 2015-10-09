@@ -53,7 +53,12 @@ func SendBugsnagRequest(endpoint string, d *models.Deployment, t *models.Target,
 	resp, err := http.PostForm(endpoint, params)
 
 	if err != nil || resp.StatusCode != 200 {
-		log.Printf("Error while notifying Bugsnag about deployment of %v on %v, %v! err: %s, resp: %s\n", d.ApplicationName, d.TargetName, d.CommitSha, err, resp)
+		log.Printf("Error while notifying Bugsnag about deployment of %v on %v, %v! err: %s, resp: %s\n",
+			d.ApplicationName,
+			d.TargetName,
+			d.CommitSha,
+			err,
+			resp.Status)
 		return
 	}
 
