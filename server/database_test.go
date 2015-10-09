@@ -456,19 +456,19 @@ func TestGetUser(t *testing.T) {
 	}
 
 	if newUser.Name != user.Name {
-		t.Errorf("wrong Name. want=%d, got=%d", user.Name, newUser.Name)
+		t.Errorf("wrong Name. want=%s, got=%s", user.Name, newUser.Name)
 	}
 
 	if newUser.AccessToken != user.AccessToken {
-		t.Errorf("wrong AccessToken. want=%d, got=%d", user.AccessToken, newUser.AccessToken)
+		t.Errorf("wrong AccessToken. want=%s, got=%s", user.AccessToken, newUser.AccessToken)
 	}
 
 	if newUser.AvatarUrl != user.AvatarUrl {
-		t.Errorf("wrong AvatarUrl. want=%d, got=%d", user.AvatarUrl, newUser.AvatarUrl)
+		t.Errorf("wrong AvatarUrl. want=%s, got=%s", user.AvatarUrl, newUser.AvatarUrl)
 	}
 
 	if newUser.ApiToken != user.ApiToken {
-		t.Errorf("wrong ApiToken. want=%d, got=%d", user.ApiToken, newUser.ApiToken)
+		t.Errorf("wrong ApiToken. want=%s, got=%s", user.ApiToken, newUser.ApiToken)
 	}
 }
 
