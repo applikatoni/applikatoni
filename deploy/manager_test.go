@@ -215,10 +215,10 @@ func TestNewWorker(t *testing.T) {
 			}
 		}
 		if w.logger != testLogger {
-			t.Errorf("worker has the wrong logger. want=%q, got=%q", testLogger, w.logger)
+			t.Errorf("worker has the wrong logger. want=%+v, got=%+v", testLogger, w.logger)
 		}
 		if w.sshConfig != testSshConfig {
-			t.Errorf("worker has the wrong sshConfig. want=%q, got=%q", testSshConfig, w.sshConfig)
+			t.Errorf("worker has the wrong sshConfig. want=%+v, got=%+v", testSshConfig, w.sshConfig)
 		}
 	}
 }
