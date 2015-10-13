@@ -205,6 +205,12 @@ func createDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	comment := r.FormValue("comment")
+	if comment == "" {
+		http.Error(w, "comment is empty", 422)
+		return
+	}
+
 	commitSha := r.FormValue("commitsha")
 	if !isValidCommitSha(commitSha) {
 		http.Error(w, "invalid commit sha", 422)

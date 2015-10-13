@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Do not allow empty deployment comments (mrnugget)
 * Send correct `repository` value to Bugsnag (mrnugget)
 * Fix timestamp in title attribute on deployment details page (mrnugget)
 * Fix linebreaks in Flowdock messages (mrnugget)
