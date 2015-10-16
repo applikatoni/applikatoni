@@ -64,7 +64,7 @@ func authenticated(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		currentUser := getCurrentUser(r)
 		if currentUser == nil {
-			http.Redirect(w, r, "/login", http.StatusFound)
+			http.Redirect(w, r, "/oauth2/authorize", http.StatusFound)
 		} else {
 			fn(w, r)
 		}
