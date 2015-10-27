@@ -4,6 +4,8 @@
 
 ## 1.1.0 - 27. October 2015
 
+* Show a diff between the current commit on the specified target and the
+  selected commit before deploying code (mrnugget)
 * Fix the broken redirect to `/login` when unauthorized (mrnugget)
 * Do not allow empty deployment comments (mrnugget)
 * Send correct `repository` value to Bugsnag (mrnugget)
