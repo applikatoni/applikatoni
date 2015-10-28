@@ -92,7 +92,7 @@ and download a packaged version of Applikatoni.
         vim configuration.json
 3. Start the server:
 
-        ./applikatoni -port=":8080" -db=./db/production.db -conf=./configuration.json
+        ./applikatoni -port=:8080 -db=./db/production.db -conf=./configuration.json -env=production
 
 # How it works
 
@@ -227,7 +227,7 @@ Here is a sample `configuration.json` for an application called
 `our-main-application` with its source code hosted under
 `github.com/shipping-company/our-main-application`.
 
-The application will be deployed to three servers: 
+The application will be deployed to three servers:
 
 * 1.unicorn.production.shipping-company.com
 * 2.unicorn.production.shipping-company.com
