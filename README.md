@@ -54,14 +54,14 @@ Also: there is a lot of pizza involved! 🍕
 
           <where your applikatoni instance will be hosted>/oauth2/callback
 
-2. Install Appliatoni on your server. See [Installation](#Installation) for more
+2. Install Appliatoni on your server. See [Installation](#installation) for more
    information
 
-3. Configure Applikatoni. See [Configuration](#Configuration) for detailed
+3. Configure Applikatoni. See [Configuration](#configuration) for detailed
    instructions.
 
 4. Setup the database with the packaged
-   [goose](https://bitbucket.org/liamstask/goose) binary. See [Usage](#Usage) on how to do that.
+   [goose](https://bitbucket.org/liamstask/goose) binary. See [Usage](#usage) on how to do that.
 
 5. Start Applikatoni
 
@@ -86,7 +86,7 @@ and download a packaged version of Applikatoni.
         go get bitbucket.org/liamstask/goose/cmd/goose
         vim db/dbconf.yml
         goose -env="production" up
-2. Create a `configuration.json` file for your needs. See [Configuration](#Configuration) for more information.
+2. Create a `configuration.json` file for your needs. See [Configuration](#configuration) for more information.
 
         cp configuration_example.json configuration.json
         vim configuration.json
@@ -227,7 +227,7 @@ Here is a sample `configuration.json` for an application called
 `our-main-application` with its source code hosted under
 `github.com/shipping-company/our-main-application`.
 
-The application will be deployed to three servers: 
+The application will be deployed to three servers:
 
 * 1.unicorn.production.shipping-company.com
 * 2.unicorn.production.shipping-company.com
