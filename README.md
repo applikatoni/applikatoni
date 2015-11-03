@@ -70,6 +70,7 @@ Also: there is a lot of pizza involved! 🍕
 
 * sqlite3
 * goose - [https://bitbucket.org/liamstask/goose/](https://bitbucket.org/liamstask/goose/)
+* go-bindata - [https://github.com/jteeuwen/go-bindata/](https://github.com/jteeuwen/go-bindata/)
 
 ## Download a packaged version
 

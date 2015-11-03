@@ -3,7 +3,9 @@ language: go
 before_script:
   - go get golang.org/x/tools/cmd/vet
   - go get bitbucket.org/liamstask/goose/cmd/goose
+  - go get github.com/jteeuwen/go-bindata/...
   - cd server && goose -env="test" up && cd ../
+  - cd server && go generate && cd ../
 script: go test -v ./... && go vet ./...
 go:
   - 1.4

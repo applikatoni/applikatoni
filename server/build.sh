@@ -12,6 +12,7 @@ current_revision=$(git rev-parse HEAD)
 rm -rf ./builds/$target
 mkdir ./builds/$target
 
+go generate
 go build -o ./builds/$target/$executable ./ || exit 1
 
 mkdir -p ./builds/$target/db/
