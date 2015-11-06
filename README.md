@@ -92,7 +92,7 @@ and download a packaged version of Applikatoni.
         vim configuration.json
 3. Start the server:
 
-        ./applikatoni -port=":8080" -db=./db/production.db -conf=./configuration.json
+        ./applikatoni -port=:8080 -db=./db/production.db -conf=./configuration.json -env=production
 
 # How it works
 

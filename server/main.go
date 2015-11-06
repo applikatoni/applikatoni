@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"os"
 
+	"bitbucket.org/liamstask/goose/lib/goose"
+
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 
@@ -30,6 +32,9 @@ var (
 	port                  = flag.String("port", ":8080", "port to listen on")
 	databasePath          = flag.String("db", "./db/development.db", "path to sqlite3 database file")
 	templatesPath         = flag.String("templates", "./assets/templates", "path to template files")
+	env                   = flag.String("env", "development", "environment applikatoni is used in")
+	dbConfDir             = flag.String("dbconfdir", "./db", "path to directory of dbconf.yml")
+	migrationDir          = flag.String("migrationdir", "./db/migrations", "path to migrations files")
 )
 
 var (
@@ -77,6 +82,14 @@ func main() {
 		log.Fatal("could not open sqlite3 database file", err)
 	}
 	defer db.Close()
+
+	migrated, err := isDBMigrated(db)
+	if err != nil {
+		log.Fatal("could not check if database is migrated. Error: ", err)
+	}
+	if !migrated {
+		log.Fatal("please migrated to newest database version")
+	}
 
 	// If there are deployments in state 'new'/'active' when booting up
 	// Applikatoni probably crashed with a deployment running. Set these to
@@ -153,4 +166,27 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func isDBMigrated(db *sql.DB) (bool, error) {
+	dbconf, err := goose.NewDBConf(*dbConfDir, *env, "")
+	if err != nil {
+		return false, err
+	}
+
+	currentVersion, err := goose.EnsureDBVersion(dbconf, db)
+	if err != nil {
+		return false, err
+	}
+
+	newestVersion, err := goose.GetMostRecentDBVersion(*migrationDir)
+	if err != nil {
+		return false, err
+	}
+
+	if currentVersion != newestVersion {
+		return false, nil
+	}
+
+	return true, nil
 }

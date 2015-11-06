@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Ensure the database is migrated to newest version when booting up (Issue 2, wind0r)
+
 ## 1.1.0 - 27. October 2015
 
 * Show a diff between the current commit on the specified target and the
