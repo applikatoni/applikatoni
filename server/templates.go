@@ -90,7 +90,16 @@ func parseTemplates(base string, templateSets [][]string) (map[string]*template.
 
 		_, err := t.ParseFiles(paths...)
 		if err != nil {
-			return nil, err
+			for _, p := range paths {
+				data, err := Asset(p)
+				if err != nil {
+					return nil, err
+				}
+				_, err = t.Parse(string(data))
+				if err != nil {
+					return nil, err
+				}
+			}
 		}
 
 		t = t.Lookup("layout")
