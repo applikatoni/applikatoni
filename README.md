@@ -513,6 +513,11 @@ To get Applikatoni running locally see [Installation](#installation),
 (And use [GitHub developer applications](https://github.com/settings/developers)
 to login locally).
 
+There is also a
+[Vagrantfile](https://github.com/applikatoni/applikatoni/blob/ff7dad7769753e2aeb7c1aa4f518c45d7e68629a/Vagrantfile)
+that installs Applikatoni and runs the tests. So, a `vagrant up` in this
+repository is enough to get Applikatoni fully installed in a virtual machine.
+
 If you want to contribute and don't know where to start, check out the issues
 tagged with [help wanted](https://github.com/applikatoni/applikatoni/labels/help%20wanted).
 
