@@ -507,11 +507,18 @@ so I'd understand if you won't add a test.
 Then send a pull request. If any of this doesn't work and you don't know why:
 send a pull request (or open a issue) and we'll see what we can do!
 
+To get Applikatoni running locally see [Installation](#installation),
+[Getting Started](#getting-started) and [Usage](#usage). You will also need a
+`configuration.json` file to play around with -- see [Sample](#sample) for this.
+(And use [GitHub developer applications](https://github.com/settings/developers)
+to login locally).
+
 If you want to contribute and don't know where to start, check out the issues
 tagged with [help wanted](https://github.com/applikatoni/applikatoni/labels/help%20wanted).
 
 If you're looking for easy issues, look no further than the issues tagged as
 [easy](https://github.com/applikatoni/applikatoni/labels/easy).
+
 
 # Is it production ready?
 
