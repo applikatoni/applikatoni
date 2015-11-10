@@ -20,7 +20,6 @@ mkdir -p ./builds/$target/db/
 cp ./db/dbconf.yml ./builds/$target/db/
 cp -R ./db/migrations ./builds/$target/db/
 cp ./configuration_example.json ./builds/$target/
-cp -R ./assets ./builds/$target/
 cp ../LICENSE ./builds/$target/
 cp ../README.md ./builds/$target/
 cp ../CHANGELOG.md ./builds/$target/
