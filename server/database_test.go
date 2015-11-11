@@ -167,6 +167,51 @@ func TestGetApplicationDeployments(t *testing.T) {
 	}
 }
 
+func TestGetApplicationDeploymentsByTarget(t *testing.T) {
+	db := newTestDb(t)
+	defer cleanCloseTestDb(db, t)
+
+	firstDeployment := buildDeployment(9999)
+	err := createDeployment(db, firstDeployment)
+	checkErr(t, err)
+
+	secondDeployment := buildDeployment(9999)
+	err = createDeployment(db, secondDeployment)
+	checkErr(t, err)
+
+	thirdDeployment := buildDeployment(9999)
+	thirdDeployment.TargetName = "test"
+	err = createDeployment(db, thirdDeployment)
+	checkErr(t, err)
+
+	application := &models.Application{Name: "flincOnRails"}
+
+	deployments, err := getApplicationDeployments(db, application, 99)
+	checkErr(t, err)
+
+	if len(deployments) != 3 {
+		t.Errorf("Wrong number of deployments returned. expected=%d, got=%d", 3, len(deployments))
+	}
+
+	deployments, err = getApplicationDeploymentsByTarget(db, application, &models.Target{Name: "production"})
+	checkErr(t, err)
+	if len(deployments) != 2 {
+		t.Errorf("Wrong number of deployments returned. expected=%d, got=%d", 2, len(deployments))
+	}
+
+	deployments, err = getApplicationDeploymentsByTarget(db, application, &models.Target{Name: "test"})
+	checkErr(t, err)
+	if len(deployments) != 1 {
+		t.Errorf("Wrong number of deployments returned. expected=%d, got=%d", 1, len(deployments))
+	}
+
+	deployments, err = getApplicationDeploymentsByTarget(db, application, &models.Target{Name: "empty"})
+	checkErr(t, err)
+	if len(deployments) != 0 {
+		t.Errorf("Wrong number of deployments returned. expected=%d, got=%d", 0, len(deployments))
+	}
+}
+
 func TestGetDeployment(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
