@@ -14,12 +14,13 @@ import (
 	"database/sql"
 )
 
-const summaryTmplStr = `Deployed {{.GitHubRepo}}/{{.Branch}} on {{.Target}} by {{.Username}} :pizza:
+const summaryTmplStr = `New {{.GitHubRepo}} Deployment:
+**{{.Username}}** deployed **{{.Branch}}** on **{{.Target}}** :pizza:
 
-{{.Comment}}
+> {{.Comment}}
 
-SHA: {{.GitHubUrl}}
-URL: {{.DeploymentURL}}
+[View latest commit on GitHub]({{.GitHubUrl}})
+[Open deployment in Applikatoni]({{.DeploymentURL}})
 `
 
 var summaryTemplate = template.Must(template.New("summary").Parse(summaryTmplStr))
