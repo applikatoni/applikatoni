@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Add SHA and link to "what will be deployed"-diff (Issue 11, wind0r)
 * Ensure the database is migrated to newest version when booting up (Issue 2, wind0r)
 
 ## 1.1.0 - 27. October 2015
