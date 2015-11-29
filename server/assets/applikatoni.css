@@ -30,7 +30,7 @@ p.clean {
 }
 
 .deployment-comment {
-  word-break: break-word;
+  word-break: break-all;
 }
 
 .logentries {

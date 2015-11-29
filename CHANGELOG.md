@@ -4,6 +4,7 @@
 
 * Use markdown formatting for flowdock notifications (fabrik42)
 * Ensure the database is migrated to newest version when booting up (Issue 2, wind0r)
+* Fix Firefox word-break issue (Issue 10, flakyfilibuster)
 
 ## 1.1.0 - 27. October 2015
 
