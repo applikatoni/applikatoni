@@ -37,7 +37,7 @@ Commit.prototype.updatedAt = function() {
   return this.rawJson.commit.committer.date;
 }
 
-Commit.prototype.html_url = function() {
+Commit.prototype.htmlUrl = function() {
   return this.rawJson.html_url;
 }
 
