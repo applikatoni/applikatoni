@@ -16,9 +16,10 @@ import (
 const gitHubAPI = "https://api.github.com"
 
 type GitHubCommit struct {
-	Author *models.User `json:"author"`
-	Sha    string       `json:"sha"`
-	Commit struct {
+	Author  *models.User `json:"author"`
+	Sha     string       `json:"sha"`
+	HtmlURL string       `json:"html_url"`
+	Commit  struct {
 		Message   string `json:"message"`
 		Committer struct {
 			ComittedAt time.Time `json:"date"`

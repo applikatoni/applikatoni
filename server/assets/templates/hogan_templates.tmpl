@@ -161,7 +161,10 @@
               <img class="img-circle avatar" src="<% userAvatarUrl %>">
             </td>
             <td>
-              <% message %>
+              <a href="<% htmlUrl %>"><% message %></a>
+            </td>
+            <td>
+              <a href="<% htmlUrl %>"><% shortSha %></a>
             </td>
           </tr>
         <%/commits%>

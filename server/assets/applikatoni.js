@@ -37,6 +37,10 @@ Commit.prototype.updatedAt = function() {
   return this.rawJson.commit.committer.date;
 }
 
+Commit.prototype.htmlUrl = function() {
+  return this.rawJson.html_url;
+}
+
 function Branch(branchJson) {
   this.rawJson = branchJson;
   this.commit = new Commit(this.rawJson.commit);
