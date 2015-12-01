@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Add word-break fallback for none webkit browsers (Issue 10, wind0r)
 * Add SHA and link to "what will be deployed"-diff (Issue 11, wind0r)
 * Use markdown formatting for flowdock notifications (fabrik42)
 * Ensure the database is migrated to newest version when booting up (Issue 2, wind0r)
