@@ -1,3 +1,8 @@
+html {
+  position: relative;
+  min-height: 100%;
+}
+
 .user-controls {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -121,15 +126,19 @@ p.clean {
   font-family: Monospace;
 }
 
-#wrap {
-  min-height: 100%;
-  height: auto;
-  margin: 0 auto -60px;
-  padding: 0 0 60px;
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
 }
 
-#footer {
-  padding: 20px;
-  height: 60px;
-  background-color: #f8f8f8;
+.container .text-muted {
+  margin: 20px 0;
 }
