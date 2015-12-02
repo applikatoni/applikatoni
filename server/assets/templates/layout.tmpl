@@ -17,33 +17,33 @@
     <link rel="stylesheet" href="/assets/applikatoni.css">
   </head>
   <body>
-      <nav class="navbar navbar-default navbar-static-top">
-        <div class="container-fluid">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="/">Applikatoni</a>
-          </div>
-
-          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            {{ if .currentUser }}
-            {{template "applicationsNavbar" .}}
-            {{end}}
-
-            <p class="nav navbar-text navbar-right user-controls">
-              {{ if .currentUser }}
-              <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
-              <b>{{ .currentUser.Name }}</b>
-              <a href="/oauth2/logout" class="navbar-link">Log out</a>
-              {{ else }}
-              <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
-              {{ end }}
-            </p>
-          </div>
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Applikatoni</a>
         </div>
-      </nav>
 
-      <div class="container">
-        {{template "body" .}}
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          {{ if .currentUser }}
+          {{template "applicationsNavbar" .}}
+          {{end}}
+
+          <p class="nav navbar-text navbar-right user-controls">
+            {{ if .currentUser }}
+            <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
+            <b>{{ .currentUser.Name }}</b>
+            <a href="/oauth2/logout" class="navbar-link">Log out</a>
+            {{ else }}
+            <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
+            {{ end }}
+          </p>
+        </div>
       </div>
+    </nav>
+
+    <div class="container">
+      {{template "body" .}}
+    </div>
     <footer class="footer navbar-fixed-bottom">
       <div class="container">
         <p class="text-muted text-center">
