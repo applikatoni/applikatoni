@@ -17,33 +17,42 @@
     <link rel="stylesheet" href="/assets/applikatoni.css">
   </head>
   <body>
-    <nav class="navbar navbar-default navbar-static-top">
-      <div class="container-fluid">
-        <div class="navbar-header">
-          <a class="navbar-brand" href="/">Applikatoni</a>
-        </div>
+    <div id="wrap">
+      <nav class="navbar navbar-default navbar-static-top">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="/">Applikatoni</a>
+          </div>
 
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          {{ if .currentUser }}
-            {{template "applicationsNavbar" .}}
-          {{end}}
-
-          <p class="nav navbar-text navbar-right user-controls">
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             {{ if .currentUser }}
+            {{template "applicationsNavbar" .}}
+            {{end}}
+
+            <p class="nav navbar-text navbar-right user-controls">
+              {{ if .currentUser }}
               <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
               <b>{{ .currentUser.Name }}</b>
               <a href="/oauth2/logout" class="navbar-link">Log out</a>
-            {{ else }}
+              {{ else }}
               <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
-            {{ end }}
-          </p>
+              {{ end }}
+            </p>
+          </div>
         </div>
-      </div>
-    </nav>
+      </nav>
 
-    <div class="container">
-      {{template "body" .}}
+      <div class="container">
+        {{template "body" .}}
+      </div>
     </div>
+    <footer id="footer" class="navbar-fixed-bottom">
+      <div class="container">
+        <p class="text-muted">
+          <a href="http://applikatoni.com/">Applikatoni</a> {{ .Version }} © <a href="https://flinc.org/">flinc</a> 2015.
+        </p>
+      </div>
+    </footer>
 
     {{template "hoganTemplates"}}
 

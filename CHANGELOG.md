@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Add footer (Issue 17, HParker)
 * Stop breaking the layout of deployment overview with long deployment comments (Issue 10, wind0r)
 * Add SHA and link to "what will be deployed"-diff (Issue 11, wind0r)
 * Use markdown formatting for flowdock notifications (fabrik42)

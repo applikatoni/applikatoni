@@ -120,3 +120,16 @@ p.clean {
   display: inline;
   font-family: Monospace;
 }
+
+#wrap {
+  min-height: 100%;
+  height: auto;
+  margin: 0 auto -60px;
+  padding: 0 0 60px;
+}
+
+#footer {
+  padding: 20px;
+  height: 60px;
+  background-color: #f8f8f8;
+}

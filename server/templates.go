@@ -56,6 +56,8 @@ func renderTemplate(w http.ResponseWriter, name string, data map[string]interfac
 		return
 	}
 
+	data["Version"] = VERSION
+
 	err := tmpl.Execute(w, data)
 	if err != nil {
 		log.Printf("rendering %s failed: %s\n", name, err)
