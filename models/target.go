@@ -13,6 +13,7 @@ type Target struct {
 	FlowdockEndpoint string            `json:"flowdock_endpoint"`
 	NewRelicApiKey   string            `json:"new_relic_api_key"`
 	NewRelicAppId    string            `json:"new_relic_app_id"`
+	SlackUrl         string            `json:"slack_url"`
 }
 
 func (t *Target) IsDeployer(userName string) bool {

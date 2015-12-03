@@ -34,13 +34,15 @@ func TestNotifyBugsnag(t *testing.T) {
 	}
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		response := 200
 		for _, tt := range tests {
 			actual := r.FormValue(tt.formKey)
 			if actual != tt.expected {
 				t.Errorf("sent wrong value for %s. want=%s, got=%s", tt.formKey, tt.expected, actual)
+				response = 422
 			}
 		}
-		w.WriteHeader(200)
+		w.WriteHeader(response)
 	}))
 	defer ts.Close()
 

@@ -130,6 +130,8 @@ func main() {
 	logRouter.SubscribeAll(newFlowdockNotifier(db))
 	// Setup the new relic deployment notifcation
 	logRouter.SubscribeAll(newNewRelicNotifier(db))
+	// Setup the Slack deployment notifcation
+	logRouter.SubscribeAll(newSlackNotifier(db))
 
 	// Setup the router and the routes
 	r := mux.NewRouter()
