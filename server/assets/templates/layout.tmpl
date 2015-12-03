@@ -25,16 +25,16 @@
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           {{ if .currentUser }}
-            {{template "applicationsNavbar" .}}
+          {{template "applicationsNavbar" .}}
           {{end}}
 
           <p class="nav navbar-text navbar-right user-controls">
             {{ if .currentUser }}
-              <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
-              <b>{{ .currentUser.Name }}</b>
-              <a href="/oauth2/logout" class="navbar-link">Log out</a>
+            <img src="{{ .currentUser.AvatarUrl }}" class="img-circle avatar">
+            <b>{{ .currentUser.Name }}</b>
+            <a href="/oauth2/logout" class="navbar-link">Log out</a>
             {{ else }}
-              <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
+            <a href="/oauth2/authorize" class="btn btn-default btn-sm navbar-link login">Login With GitHub</a>
             {{ end }}
           </p>
         </div>
@@ -44,6 +44,15 @@
     <div class="container">
       {{template "body" .}}
     </div>
+    <footer class="footer navbar-fixed-bottom">
+      <div class="container">
+        <p class="text-muted text-center">
+          <a href="http://applikatoni.com/">Applikatoni</a> {{ .Version }}
+          <br>
+          © <a href="https://flinc.org/">flinc</a> 2015.
+        </p>
+      </div>
+    </footer>
 
     {{template "hoganTemplates"}}
 
