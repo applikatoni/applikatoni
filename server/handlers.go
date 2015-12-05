@@ -308,8 +308,16 @@ func killDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 func listDeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 	currentUser := getCurrentUser(r)
 	application := getCurrentApplication(r)
+	target, err := getTarget(application, r.URL.Query().Get("target"))
 
-	deployments, err := getAllApplicationDeployments(db, application)
+	var deployments []*models.Deployment
+
+	if err != nil {
+		deployments, err = getAllApplicationDeployments(db, application)
+	} else {
+		deployments, err = getApplicationDeploymentsByTarget(db, application, target)
+	}
+
 	if err != nil {
 		log.Println("error loading deployments", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -324,10 +332,11 @@ func listDeploymentsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	renderTemplate(w, "deployments.tmpl", map[string]interface{}{
-		"Applications": config.Applications,
-		"Application":  application,
-		"Deployments":  deployments,
-		"currentUser":  currentUser,
+		"Applications":   config.Applications,
+		"Application":    application,
+		"Deployments":    deployments,
+		"currentUser":    currentUser,
+		"selectedTarget": target,
 	})
 }
 
@@ -516,6 +525,15 @@ func getCurrentApplication(r *http.Request) *models.Application {
 		return a.(*models.Application)
 	}
 	return nil
+}
+
+func getTarget(a *models.Application, t string) (*models.Target, error) {
+	for _, i := range a.Targets {
+		if i.Name == t {
+			return i, nil
+		}
+	}
+	return nil, errors.New("target not found")
 }
 
 func findApplication(name string) (*models.Application, error) {

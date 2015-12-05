@@ -1,7 +1,22 @@
 {{define "body"}}
+{{ $selectedTarget := .selectedTarget }}
 
 <div class="panel panel-default">
-  <div class="panel-heading">{{.Application.Name}} Deployments</div>
+  <div class="panel-heading">
+    <form role="form" action="/{{.Application.Name}}/deployments" method="GET">
+      <select name="target" class="selectpicker input-sm" onchange="this.form.submit()">
+          <option>All</option>
+          {{range  $id, $target := .Application.Targets}}
+             {{ if $selectedTarget }}
+             <option value="{{$target.Name}}" {{if eq $selectedTarget.Name $target.Name}}selected{{end}}>{{$target.Name}}</option>
+             {{else}}
+             <option value="{{$target.Name}}">{{$target.Name}}</option>
+             {{end}}
+           {{end}}
+      </select>
+      <label>{{.Application.Name}} Deployments</label>
+    </form>
+  </div>
   {{template "deploymentsTable" .}}
 </div>
 
