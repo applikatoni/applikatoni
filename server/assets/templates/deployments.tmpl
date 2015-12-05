@@ -7,8 +7,12 @@
       <select name="target" class="selectpicker input-sm" onchange="this.form.submit()">
           <option>All</option>
           {{range  $id, $target := .Application.Targets}}
-          <option value="{{$target.Name}}" {{if eq $selectedTarget $target.Name}}selected{{end}}>{{$target.Name}}</option>
-          {{end}}
+             {{ if $selectedTarget }}
+             <option value="{{$target.Name}}" {{if eq $selectedTarget.Name $target.Name}}selected{{end}}>{{$target.Name}}</option>
+             {{else}}
+             <option value="{{$target.Name}}">{{$target.Name}}</option>
+             {{end}}
+           {{end}}
       </select>
       <label>{{.Application.Name}} Deployments</label>
     </form>
