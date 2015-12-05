@@ -54,7 +54,7 @@ Also: there is a lot of pizza involved! 🍕
 
           <where your applikatoni instance will be hosted>/oauth2/callback
 
-2. Install Appliatoni on your server. See [Installation](#installation) for more
+2. Install Applikatoni on your server. See [Installation](#installation) for more
    information
 
 3. Configure Applikatoni. See [Configuration](#configuration) for detailed
@@ -201,7 +201,7 @@ where `F00B4R` is the commit SHA you selected in the web frontend.
 * `role` - Every `host` of each `target` fulfills different `role`s. What gets
   executed and when on which `host` depends on the `role`s this host has. e.g.:
 `database-server` or `web-app-server`.
-* `stage` - A deployment consists of on or more stages. A `role` defines on or
+* `stage` - A deployment consists of one or more stages. A `role` defines one or
   more `stage`s (by defining `script_templates` for each `stage`). A `stage` can
   succeed or fail while deploying the application. If a `stage` failed, the
   deployment stops after this change. All `stage`s are executed synchronously on
@@ -360,7 +360,7 @@ Inside the `applications` array applications need to be configured.
 * `github_repo` - The name of the GitHub repository. It's the `rails-app` in `github.com/company/rails-app`.
 * `github_branches` - An array of branch names. These branches will show up with their current status on the application page in Applikatoni to easily deploy them with a click.
 * `travis_image_url` - The URL to the [Travis CI status image](http://docs.travis-ci.com/user/status-images/), including the token.
-* `daily_digest_receivers` - An array of email adresses to which the daily digest should be sent (if `mandrill_api_key` is not set, no daily digest will be sent).
+* `daily_digest_receivers` - An array of email addresses to which the daily digest should be sent (if `mandrill_api_key` is not set, no daily digest will be sent).
 * `daily_digest_target` - The name of the `target` for which the daily digest should be sent. For example: if you have `test`, `staging` and `production` targets, it makes sense to only send out daily digest emails for `production`.
 
 ### Target Properties
@@ -373,7 +373,7 @@ target has its own number of hosts.
 
 * `name` - The name of the target.
 * `deployment_user` - The user on the target hosts that has access via SSH.
-* `deployment_ssh_key` - The private SSH key of the deployment user. The public key of the user _must_ be added to the hosts, so Applikatoni can access the host without password authenficiation
+* `deployment_ssh_key` - The private SSH key of the deployment user. The public key of the user _must_ be added to the hosts, so Applikatoni can access the host without password authentication
 * `deploy_username` - An array of GitHub usernames. Users with these names have "deploy" access to this target.
 * `bugsnag_api_key` - Your Bugsnag API key. If this is set, Applikatoni will notify Bugsnag about a deployment to this target after a successful deployment. **If this is left blank, Applikatoni will not notify NewRelic about deployments**.
 * `flowdock_endpoint` - The Flowdock [Message URL](https://www.flowdock.com/api/messages) including the [auth](https://www.flowdock.com/api/authentication) information. Example: `https://deadbeefdeadbeef@api.flowdock.com/flows/acme/main/messages`. **If this is left blank, Applikatoni will not notify Flowdock about deployments**.
