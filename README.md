@@ -17,7 +17,7 @@ Besides giving your team **a history of deployments**, so you can see what has
 been deployed by whom to which servers, it also offers integration into a
 multitude of a **third-party services**, so your team never misses a deployment.
 **Deploy pull requests** from GitHub, check the **Travis CI** status of a branch
-before deploying, notify your team in **Flowdock** about deployments, tell
+before deploying, notify your team in **Flowdock** or **Slack** about deployments, tell
 **NewRelic** about the current revision of your application and reset
 **Bugsnag** after a deployment.
 
@@ -274,6 +274,7 @@ Unicorn webserver and Sidekiq as a background worker process.
           "flowdock_endpoint": "<FLOWDOCK REST ENTRY POINT WITH HTTP AUTH>",
           "new_relic_api_key": "<NEW RELIC API KEY>",
           "new_relic_app_id": "<NEW RELIC APP ID>",
+          "slack_url": "<SLACK INCOMING WEBHOOK URL>",
           "hosts": [
             {
               "name": "1.unicorn.production.shipping-company.com:22",

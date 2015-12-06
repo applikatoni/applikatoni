@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Add Slack Integration (Issue 18, HParker)
 * Add footer (Issue 17, HParker)
 * Add ability to filter the list of deployments by target (Issue 9, wind0r)
 * Stop breaking the layout of deployment overview with long deployment comments (Issue 10, wind0r)
