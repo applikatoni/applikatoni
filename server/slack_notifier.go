@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 
 	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
@@ -21,7 +20,7 @@ const slackSummaryTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deploye
 <{{.GitHubUrl}}|View latest commit on GitHub>
 <{{.DeploymentURL}}|Open deployment in Applikatoni>`
 
-var slackSummaryTemplate = template.Must(template.New("slackSummary").Parse(slackSummaryTmplStr))
+var slackTemplate = template.Must(template.New("slackSummary").Parse(slackSummaryTmplStr))
 
 type slackMsg struct {
 	Text string `json:"text"`
@@ -56,7 +55,7 @@ func NotifySlack(db *sql.DB, deploymentId int, success bool) {
 		return
 	}
 
-	summary, err := generateSlackSummary(deployment, application, user, success)
+	summary, err := generateSummary(slackTemplate, application, deployment, user, success)
 
 	if err != nil {
 		log.Printf("Could not generate Slack deployment summary, %s\n", err)
@@ -64,38 +63,6 @@ func NotifySlack(db *sql.DB, deploymentId int, success bool) {
 	}
 
 	SendSlackRequest(deployment, target, application, summary)
-}
-
-func generateSlackSummary(d *models.Deployment, a *models.Application, u *models.User, success bool) (string, error) {
-	var summary bytes.Buffer
-
-	var protocol string
-	if config.SSLEnabled {
-		protocol = "https"
-	} else {
-		protocol = "http"
-	}
-
-	deploymentUrl := fmt.Sprintf("%s://%s/%v/deployments/%v",
-		protocol,
-		config.Host,
-		a.GitHubRepo, d.Id)
-
-	gitHubUrl := fmt.Sprintf("https://github.com/%v/%v/commit/%v",
-		a.GitHubOwner, a.GitHubRepo, d.CommitSha)
-
-	err := slackSummaryTemplate.Execute(&summary, map[string]interface{}{
-		"GitHubRepo":    a.GitHubRepo,
-		"Success":       success,
-		"Branch":        d.Branch,
-		"Target":        d.TargetName,
-		"Username":      u.Name,
-		"Comment":       d.Comment,
-		"GitHubUrl":     gitHubUrl,
-		"DeploymentURL": deploymentUrl,
-	})
-
-	return summary.String(), err
 }
 
 func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Application, summary string) {
