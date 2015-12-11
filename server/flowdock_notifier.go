@@ -11,7 +11,7 @@ import (
 	"database/sql"
 )
 
-const flowdockTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deployed{{else}}Deploy Failed{{end}}:
+const flowdockTmplStr = `{{.GitHubRepo}} {{if eq .State "successful"}}Successfully Deployed{{else if eq .State "failed"}}Deploy Failed{{end}}:
 **{{.Username}}** deployed **{{.Branch}}** on **{{.Target}}** :pizza:
 
 > {{.Comment}}
@@ -22,7 +22,7 @@ const flowdockTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deployed{{e
 
 var flowdockTemplate = template.Must(template.New("flowdockSummary").Parse(flowdockTmplStr))
 
-func NotifyFlowdock(deploymentId int, success bool) {
+func NotifyFlowdock(deploymentId int) {
 	deployment, err := getDeployment(db, deploymentId)
 	if err != nil {
 		log.Printf("Could not find deployment with id %v, %s\n", deploymentId, err)
@@ -51,7 +51,7 @@ func NotifyFlowdock(deploymentId int, success bool) {
 		return
 	}
 
-	summary, err := generateSummary(flowdockTemplate, application, deployment, user, success)
+	summary, err := generateSummary(flowdockTemplate, application, deployment, user)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 	}
@@ -78,10 +78,8 @@ func NotifyFlowdock(deploymentId int, success bool) {
 func newFlowdockNotifier(db *sql.DB) deploy.Listener {
 	fn := func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
-			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
-				go NotifyFlowdock(entry.DeploymentId, true)
-			} else if entry.EntryType == deploy.DEPLOYMENT_FAIL {
-				go NotifyFlowdock(entry.DeploymentId, false)
+			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS || entry.EntryType == deploy.DEPLOYMENT_FAIL {
+				go NotifyFlowdock(entry.DeploymentId)
 			}
 		}
 	}

@@ -13,7 +13,7 @@ import (
 	"text/template"
 )
 
-const slackSummaryTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deployed{{else}}Deploy Failed{{end}}:
+const slackSummaryTmplStr = `{{.GitHubRepo}} {{if eq .State "successful"}}Successfully Deployed{{else if eq .State "failed"}}Deploy Failed{{end}}:
 {{.Username}} deployed {{.Branch}} on {{.Target}} :pizza:
 
 > {{.Comment}}
@@ -26,7 +26,7 @@ type slackMsg struct {
 	Text string `json:"text"`
 }
 
-func NotifySlack(db *sql.DB, deploymentId int, success bool) {
+func NotifySlack(db *sql.DB, deploymentId int) {
 	deployment, err := getDeployment(db, deploymentId)
 	if err != nil {
 		log.Printf("Could not find deployment with id %v, %s\n", deploymentId, err)
@@ -55,7 +55,7 @@ func NotifySlack(db *sql.DB, deploymentId int, success bool) {
 		return
 	}
 
-	summary, err := generateSummary(slackTemplate, application, deployment, user, success)
+	summary, err := generateSummary(slackTemplate, application, deployment, user)
 
 	if err != nil {
 		log.Printf("Could not generate Slack deployment summary, %s\n", err)
@@ -91,10 +91,8 @@ func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Applicat
 func newSlackNotifier(db *sql.DB) deploy.Listener {
 	fn := func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
-			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
-				go NotifySlack(db, entry.DeploymentId, true)
-			} else if entry.EntryType == deploy.DEPLOYMENT_FAIL {
-				go NotifySlack(db, entry.DeploymentId, false)
+			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS || entry.EntryType == deploy.DEPLOYMENT_FAIL {
+				go NotifySlack(db, entry.DeploymentId)
 			}
 		}
 	}

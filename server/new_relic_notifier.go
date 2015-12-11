@@ -58,7 +58,7 @@ func NotifyNewRelic(db *sql.DB, endpoint string, deploymentId int) {
 }
 
 func SendNewRelicRequest(endpoint string, d *models.Deployment, t *models.Target, a *models.Application, u *models.User) {
-	summary, err := generateSummary(newRelicTemplate, a, d, u, true)
+	summary, err := generateSummary(newRelicTemplate, a, d, u)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 	}

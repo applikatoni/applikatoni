@@ -8,7 +8,7 @@ import (
 	"github.com/applikatoni/applikatoni/models"
 )
 
-func generateSummary(t *template.Template, a *models.Application, d *models.Deployment, u *models.User, success bool) (string, error) {
+func generateSummary(t *template.Template, a *models.Application, d *models.Deployment, u *models.User) (string, error) {
 	var summary bytes.Buffer
 
 	var scheme string
@@ -26,7 +26,7 @@ func generateSummary(t *template.Template, a *models.Application, d *models.Depl
 
 	err := t.Execute(&summary, map[string]interface{}{
 		"GitHubRepo":    a.GitHubRepo,
-		"Success":       success,
+		"State":         d.State,
 		"Branch":        d.Branch,
 		"Target":        d.TargetName,
 		"Username":      u.Name,
