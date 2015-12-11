@@ -88,7 +88,7 @@ func main() {
 		log.Fatal("could not check if database is migrated. Error: ", err)
 	}
 	if !migrated {
-		log.Fatal("please migrated to newest database version")
+		log.Fatal("please migrate the database to the newest version")
 	}
 
 	// If there are deployments in state 'new'/'active' when booting up
