@@ -12,6 +12,7 @@ current_revision=$(git rev-parse HEAD)
 rm -rf ./builds/$target
 mkdir ./builds/$target
 
+go generate
 go build -o ./builds/$target/$executable ./ || exit 1
 
 mkdir -p ./builds/$target/db/
@@ -19,7 +20,6 @@ mkdir -p ./builds/$target/db/
 cp ./db/dbconf.yml ./builds/$target/db/
 cp -R ./db/migrations ./builds/$target/db/
 cp ./configuration_example.json ./builds/$target/
-cp -R ./assets ./builds/$target/
 cp ../LICENSE ./builds/$target/
 cp ../README.md ./builds/$target/
 cp ../CHANGELOG.md ./builds/$target/

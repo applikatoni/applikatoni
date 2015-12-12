@@ -137,7 +137,7 @@ func main() {
 	r := mux.NewRouter()
 
 	// Assets
-	fsServer := http.FileServer(http.Dir("assets/"))
+	fsServer := FileSystemHandler()
 	assetsServer := http.StripPrefix("/assets/", fsServer)
 
 	r.PathPrefix("/assets/").Handler(assetsServer)

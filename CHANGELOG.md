@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Bundle assets and templates with binary (wind0r)
 * Add Slack Integration (Issue 18, HParker)
 * Add footer (Issue 17, HParker)
 * Add ability to filter the list of deployments by target (Issue 9, wind0r)
