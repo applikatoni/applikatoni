@@ -1,20 +1,17 @@
 package main
 
 import (
-	"bytes"
-	"fmt"
-	"html/template"
 	"log"
 	"net/http"
 	"net/url"
+	"text/template"
 
 	"github.com/applikatoni/applikatoni/deploy"
-	"github.com/applikatoni/applikatoni/models"
 
 	"database/sql"
 )
 
-const summaryTmplStr = `New {{.GitHubRepo}} Deployment:
+const flowdockTmplStr = `{{.GitHubRepo}} {{if eq .State "successful"}}Successfully Deployed{{else if eq .State "failed"}}Deploy Failed{{end}}:
 **{{.Username}}** deployed **{{.Branch}}** on **{{.Target}}** :pizza:
 
 > {{.Comment}}
@@ -23,7 +20,7 @@ const summaryTmplStr = `New {{.GitHubRepo}} Deployment:
 [Open deployment in Applikatoni]({{.DeploymentURL}})
 `
 
-var summaryTemplate = template.Must(template.New("summary").Parse(summaryTmplStr))
+var flowdockTemplate = template.Must(template.New("flowdockSummary").Parse(flowdockTmplStr))
 
 func NotifyFlowdock(deploymentId int) {
 	deployment, err := getDeployment(db, deploymentId)
@@ -54,7 +51,7 @@ func NotifyFlowdock(deploymentId int) {
 		return
 	}
 
-	summary, err := generateSummary(application, deployment, user)
+	summary, err := generateSummary(flowdockTemplate, application, deployment, user)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 	}
@@ -78,39 +75,10 @@ func NotifyFlowdock(deploymentId int) {
 	}
 }
 
-func generateSummary(a *models.Application, d *models.Deployment, u *models.User) (string, error) {
-	var summary bytes.Buffer
-
-	var scheme string
-	if config.SSLEnabled {
-		scheme = "https"
-	} else {
-		scheme = "http"
-	}
-
-	deploymentUrl := fmt.Sprintf("%s://%s/%v/deployments/%v", scheme, config.Host,
-		a.GitHubRepo, d.Id)
-
-	gitHubUrl := fmt.Sprintf("https://github.com/%v/%v/commit/%v",
-		a.GitHubOwner, a.GitHubRepo, d.CommitSha)
-
-	err := summaryTemplate.Execute(&summary, map[string]interface{}{
-		"GitHubRepo":    a.GitHubRepo,
-		"Branch":        d.Branch,
-		"Target":        d.TargetName,
-		"Username":      u.Name,
-		"Comment":       d.Comment,
-		"GitHubUrl":     gitHubUrl,
-		"DeploymentURL": deploymentUrl,
-	})
-
-	return summary.String(), err
-}
-
 func newFlowdockNotifier(db *sql.DB) deploy.Listener {
 	fn := func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
-			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
+			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS || entry.EntryType == deploy.DEPLOYMENT_FAIL {
 				go NotifyFlowdock(entry.DeploymentId)
 			}
 		}

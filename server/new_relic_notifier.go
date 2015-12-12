@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"text/template"
 
 	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
@@ -15,6 +16,14 @@ import (
 const (
 	newRelicNotifyEndpoint = "https://api.newrelic.com/deployments.xml"
 )
+
+const newRelicTmplStr = `Deployed {{.GitHubRepo}}/{{.Branch}} on {{.Target}} by {{.Username}} :pizza:
+{{.Comment}}
+SHA: {{.GitHubUrl}}
+URL: {{.DeploymentURL}}
+`
+
+var newRelicTemplate = template.Must(template.New("newRelicSummary").Parse(newRelicTmplStr))
 
 func NotifyNewRelic(db *sql.DB, endpoint string, deploymentId int) {
 	deployment, err := getDeployment(db, deploymentId)
@@ -49,7 +58,7 @@ func NotifyNewRelic(db *sql.DB, endpoint string, deploymentId int) {
 }
 
 func SendNewRelicRequest(endpoint string, d *models.Deployment, t *models.Target, a *models.Application, u *models.User) {
-	summary, err := generateSummary(a, d, u)
+	summary, err := generateSummary(newRelicTemplate, a, d, u)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 	}
