@@ -54,6 +54,7 @@ func NotifyFlowdock(db *sql.DB, deploymentId int) {
 	summary, err := generateSummary(flowdockTemplate, application, deployment, user)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
+		return
 	}
 
 	params := url.Values{
