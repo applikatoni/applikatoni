@@ -46,12 +46,19 @@ Foo Bar deployed master on staging :pizza:
 <https://example.com/main-web-app/deployments/0|Open deployment in Applikatoni>`
 
 	deployment.State = models.DEPLOYMENT_SUCCESSFUL
-	actualSuccessMsg, _ := generateSummary(slackTemplate, application, deployment, user)
-	deployment.State = models.DEPLOYMENT_FAILED
-	actualFailMsg, _ := generateSummary(slackTemplate, application, deployment, user)
+	actualSuccessMsg, err := generateSummary(slackTemplate, application, deployment, user)
+	if err != nil {
+		t.Errorf("generateSummary returned err: %s\n", err)
+	}
 
 	if expectedSuccessMsg != actualSuccessMsg {
 		t.Errorf("sent wrong message expected=%v got=%v", expectedSuccessMsg, actualSuccessMsg)
+	}
+
+	deployment.State = models.DEPLOYMENT_FAILED
+	actualFailMsg, err := generateSummary(slackTemplate, application, deployment, user)
+	if err != nil {
+		t.Errorf("generateSummary returned err: %s\n", err)
 	}
 
 	if expectedFailMsg != actualFailMsg {
