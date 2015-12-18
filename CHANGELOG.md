@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+## 1.2.1 - 18. December 2015
+
+* Fix race-condition when generating summaries for Slack/Flowdock/NewRelic (mrnugget)
+
+Diff: https://github.com/applikatoni/applikatoni/compare/1.2.0...1.2.1
+
 ## 1.2.0 - 15. December 2015
 
 * Add Slack Integration (Issue 18, HParker)
