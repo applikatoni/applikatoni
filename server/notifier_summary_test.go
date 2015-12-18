@@ -3,6 +3,7 @@ package main
 import (
 	"testing"
 
+	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
 )
 
@@ -45,8 +46,8 @@ Foo Bar deployed master on staging :pizza:
 <https://github.com/shipping-co/main-web-app/commit/f00b4r|View latest commit on GitHub>
 <https://example.com/main-web-app/deployments/0|Open deployment in Applikatoni>`
 
-	deployment.State = models.DEPLOYMENT_SUCCESSFUL
-	actualSuccessMsg, err := generateSummary(slackTemplate, application, deployment, user)
+	entry := deploy.LogEntry{EntryType: deploy.DEPLOYMENT_SUCCESS}
+	actualSuccessMsg, err := generateSummary(slackTemplate, entry, application, deployment, user)
 	if err != nil {
 		t.Errorf("generateSummary returned err: %s\n", err)
 	}
@@ -55,8 +56,8 @@ Foo Bar deployed master on staging :pizza:
 		t.Errorf("sent wrong message expected=%v got=%v", expectedSuccessMsg, actualSuccessMsg)
 	}
 
-	deployment.State = models.DEPLOYMENT_FAILED
-	actualFailMsg, err := generateSummary(slackTemplate, application, deployment, user)
+	entry = deploy.LogEntry{EntryType: deploy.DEPLOYMENT_FAIL}
+	actualFailMsg, err := generateSummary(slackTemplate, entry, application, deployment, user)
 	if err != nil {
 		t.Errorf("generateSummary returned err: %s\n", err)
 	}

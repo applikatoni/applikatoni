@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"text/template"
 
+	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
 )
 
-func generateSummary(t *template.Template, a *models.Application, d *models.Deployment, u *models.User) (string, error) {
+func generateSummary(t *template.Template, entry deploy.LogEntry, a *models.Application, d *models.Deployment, u *models.User) (string, error) {
 	var summary bytes.Buffer
 
 	var scheme string
@@ -16,6 +17,13 @@ func generateSummary(t *template.Template, a *models.Application, d *models.Depl
 		scheme = "https"
 	} else {
 		scheme = "http"
+	}
+
+	var success bool
+	if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
+		success = true
+	} else {
+		success = false
 	}
 
 	deploymentUrl := fmt.Sprintf("%s://%s/%v/deployments/%v", scheme, config.Host,
@@ -26,7 +34,7 @@ func generateSummary(t *template.Template, a *models.Application, d *models.Depl
 
 	err := t.Execute(&summary, map[string]interface{}{
 		"GitHubRepo":    a.GitHubRepo,
-		"State":         d.State,
+		"Success":       success,
 		"Branch":        d.Branch,
 		"Target":        d.TargetName,
 		"Username":      u.Name,

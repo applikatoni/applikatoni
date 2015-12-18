@@ -25,10 +25,10 @@ URL: {{.DeploymentURL}}
 
 var newRelicTemplate = template.Must(template.New("newRelicSummary").Parse(newRelicTmplStr))
 
-func NotifyNewRelic(db *sql.DB, endpoint string, deploymentId int) {
-	deployment, err := getDeployment(db, deploymentId)
+func NotifyNewRelic(db *sql.DB, entry deploy.LogEntry) {
+	deployment, err := getDeployment(db, entry.DeploymentId)
 	if err != nil {
-		log.Printf("Could not find deployment with id %v, %s\n", deploymentId, err)
+		log.Printf("Could not find deployment with id %v, %s\n", entry.DeploymentId, err)
 		return
 	}
 
@@ -54,11 +54,11 @@ func NotifyNewRelic(db *sql.DB, endpoint string, deploymentId int) {
 		return
 	}
 
-	SendNewRelicRequest(newRelicNotifyEndpoint, deployment, target, application, user)
+	SendNewRelicRequest(newRelicNotifyEndpoint, entry, deployment, target, application, user)
 }
 
-func SendNewRelicRequest(endpoint string, d *models.Deployment, t *models.Target, a *models.Application, u *models.User) {
-	summary, err := generateSummary(newRelicTemplate, a, d, u)
+func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deployment, t *models.Target, a *models.Application, u *models.User) {
+	summary, err := generateSummary(newRelicTemplate, e, a, d, u)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 	}
@@ -95,7 +95,7 @@ func newNewRelicNotifier(db *sql.DB) deploy.Listener {
 	fn := func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
 			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
-				go NotifyNewRelic(db, bugsnagNotifyEndpoint, entry.DeploymentId)
+				go NotifyNewRelic(db, entry)
 			}
 		}
 	}
