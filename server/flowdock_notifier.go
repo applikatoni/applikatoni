@@ -41,13 +41,13 @@ func NotifyFlowdock(deploymentId int) {
 		return
 	}
 
-	user, err := getUser(db, deployment.UserId)
-	if err != nil {
-		log.Printf("Could not find User with id %v, %s\n", deployment.UserId, err)
+	if target.FlowdockEndpoint == "" {
 		return
 	}
 
-	if target.FlowdockEndpoint == "" {
+	user, err := getUser(db, deployment.UserId)
+	if err != nil {
+		log.Printf("Could not find User with id %v, %s\n", deployment.UserId, err)
 		return
 	}
 
