@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/applikatoni/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/models"
 
 	"database/sql"
 )
@@ -57,22 +58,29 @@ func NotifyFlowdock(db *sql.DB, deploymentId int) {
 		return
 	}
 
+	SendFlowdockRequest(target.FlowdockEndpoint, deployment, summary)
+}
+
+func SendFlowdockRequest(endpoint string, d *models.Deployment, summary string) {
 	params := url.Values{
 		"event":   {"message"},
 		"content": {summary},
 		"tags":    {"deploy,applikatoni"},
 	}
 
-	resp, err := http.PostForm(target.FlowdockEndpoint, params)
-
+	resp, err := http.PostForm(endpoint, params)
 	if err != nil || resp.StatusCode != 201 {
-		log.Printf("Error while notifying Flowdock about deployment of %v on %v, %v! err: %s, resp: %s\n", deployment.ApplicationName,
-			deployment.TargetName,
-			deployment.CommitSha,
+		log.Printf("Error while notifying Flowdock about deployment of %v on %v, %v! err: %s, resp: %s\n",
+			d.ApplicationName,
+			d.TargetName,
+			d.CommitSha,
 			err,
 			resp.Status)
 	} else {
-		log.Printf("Successfully notified Flowdock about deployment of %v on %v, %v!\n", deployment.ApplicationName, deployment.TargetName, deployment.CommitSha)
+		log.Printf("Successfully notified Flowdock about deployment of %v on %v, %v!\n",
+			d.ApplicationName,
+			d.TargetName,
+			d.CommitSha)
 	}
 }
 
