@@ -24,7 +24,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const VERSION = "1.2.0"
+const VERSION = "1.2.1"
 
 var (
 	outputVersion         = flag.Bool("v", false, "output the version of Applikatoni")
