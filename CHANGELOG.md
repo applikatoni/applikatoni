@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add ASCII banner (Issue 28, wind0r)
+
 ## 1.2.1 - 18. December 2015
 
 * Fix race-condition when generating summaries for Slack/Flowdock/NewRelic (mrnugget)
