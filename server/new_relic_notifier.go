@@ -61,6 +61,7 @@ func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deploymen
 	summary, err := generateSummary(newRelicTemplate, e, a, d, u)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
+		return
 	}
 
 	data := url.Values{}
@@ -77,7 +78,6 @@ func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deploymen
 	req.Header.Set("x-api-key", t.NewRelicApiKey)
 
 	resp, err := client.Do(req)
-
 	if err != nil || resp.StatusCode != 201 {
 		log.Printf("Error while notifying New Relic about deployment of %v on %v, %v! err: %s, resp: %s\n",
 			d.ApplicationName,
