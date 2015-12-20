@@ -187,10 +187,10 @@ func main() {
 	r.HandleFunc("/", authenticate(homeHandler))
 
 	if *env == "development" && terminal.IsTerminal(syscall.Stdin) {
-		log.Print(BANNER)
+		fmt.Println(BANNER)
 	}
 
-	log.Printf("Listening on localhost%s\n", *port)
+	log.Printf("Applikatoni is fully booted. Listening on localhost%s ...\n", *port)
 	err = http.ListenAndServe(*port, handlers.LoggingHandler(os.Stdout, r))
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
