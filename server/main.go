@@ -7,9 +7,11 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"syscall"
 
 	"bitbucket.org/liamstask/goose/lib/goose"
 
+	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
 
@@ -25,6 +27,27 @@ import (
 )
 
 const VERSION = "1.2.1"
+const BANNER = `
+                  ___
+                 |  ~~--.                      _ _ _         _              _
+                 |%=@%%/      __ _ _ __  _ __ | (_) | ____ _| |_ ___  _ __ (_)
+                 |o%%%/      / _' | '_ \| '_ \| | | |/ / _' | __/ _ \| '_ \| |
+              __ |%%o/      | (_| | |_) | |_) | | |   < (_| | || (_) | | | | |
+        _,--~~ | |(_/ ._     \__,_| .__/| .__/|_|_|_|\_\__,_|\__\___/|_| |_|_|
+     ,/'  m%%%%| |o/ /  '\.       |_|   |_|
+    /' m%%o(_)%| |/ /o%%m '\
+  /' %%@=%o%%%o|   /(_)o%%% '\         |~\ _  _ | _    _ _  _  _ _|_ _
+ /  %o%%%%%=@%%|  /%%o%%@=%%  \        |_/(/_|_)|(_)\/| | |(/_| | | _\
+|  (_)%(_)%%o%%| /%%%=@(_)%%%  |             |      /
+| %%o%%%%o%%%(_|/%o%%o%%%%o%%% |              _ |   |' _  _ _  _
+| %%o%(_)%%%%%o%(_)%%%o%%o%o%% |             (_||  ~|~(_)| | |(_)
+|  (_)%%=@%(_)%o%o%%(_)%o(_)%  |
+ \ ~%%o%%%%%o%o%=@%%o%%@%%o%~ /
+  \. ~o%%(_)%%%o%(_)%%(_)o~ ,/
+    \_ ~o%=@%(_)%o%%(_)%~ _/
+      '\_~~o%%%o%%%%%~~_/'
+         '--..____,,--'
+`
 
 var (
 	outputVersion         = flag.Bool("v", false, "output the version of Applikatoni")
@@ -162,6 +185,10 @@ func main() {
 
 	// GET /
 	r.HandleFunc("/", authenticate(homeHandler))
+
+	if *env == "development" && terminal.IsTerminal(syscall.Stdin) {
+		log.Print(BANNER)
+	}
 
 	log.Printf("Listening on localhost%s\n", *port)
 	err = http.ListenAndServe(*port, handlers.LoggingHandler(os.Stdout, r))
