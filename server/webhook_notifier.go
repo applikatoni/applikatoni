@@ -83,8 +83,10 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 		DefaultStages:   target.DefaultStages,
 	}
 
-	for i := range target.WebHooks {
-		go sendWebhookMsg(target.WebHooks[i], msg)
+	for _, w := range target.WebHooks {
+		if w.IsEntryWanted(string(entry.EntryType)) {
+			go sendWebhookMsg(w.URL, msg)
+		}
 	}
 }
 

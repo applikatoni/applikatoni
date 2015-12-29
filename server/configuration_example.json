@@ -30,8 +30,18 @@
           "new_relic_app_id": "<NEW RELIC APP ID>",
           "slack_url": "<SLACK INCOMING WEBHOOK URL>",
           "webhooks": [
-            "http://localhost:9999/telegrambrdige/",
-            "http://someService/applikatoni"
+            {
+              "url": "http://localhost:9999/telegrambridge/",
+              "filter": ["DEPLOYMENT_*"]
+            },
+            {
+              "url": "http://localhost:9999/all/",
+              "filter": ["."]
+            },
+            {
+              "url": "http://localhost:9999/buzzer/",
+              "filter": ["DEPLOYMENT_FAIL", "KILL_RECEIVED"]
+            },
           ],
           "hosts": [
             {
