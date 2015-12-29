@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -18,20 +19,26 @@ type WebHookMsg struct {
 	EntryType deploy.LogEntryType `json:"entry_type"`
 	Message   string              `json:"message"`
 
-	//Application
+	// Application
 	ApplicationName string `json:"application_name"`
 	GitHubOwner     string `json:"github_owner"`
 	GitHubRepo      string `json:"github_repo"`
 
-	//Deployment
+	// Deployment
 	DeploymentId int                    `json:"deployment_id"`
 	CommitSha    string                 `json:"commit_sha"`
 	Branch       string                 `json:"branch"`
 	State        models.DeploymentState `json:"state"`
 	Comment      string                 `json:"comment"`
 	CreatedAt    time.Time              `json:"created_at"`
+	URL          string                 `json:"deployment_url"`
 
-	//Target
+	// Deployer
+	DeployerID     int    `json:"deployer_id"`
+	DeployerName   string `json:"deployer_name"`
+	DeployerAvatar string `json:"deployer_avatar"`
+
+	// Target
 	TargetName      string                   `json:"target_name"`
 	DeploymentUser  string                   `json:"deployment_user"`
 	DeployUsernames []string                 `json:"deploy_usernames"`
@@ -60,6 +67,20 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 		return
 	}
 
+	scheme := "http"
+	if config.SSLEnabled {
+		scheme = "https"
+	}
+
+	deploymentUrl := fmt.Sprintf("%s://%s/%v/deployments/%v", scheme, config.Host,
+		application.GitHubRepo, deployment.Id)
+
+	deployment.User, err = getUser(db, deployment.UserId)
+	if err != nil {
+		log.Printf("Could not find user with id %v, %s\n", deployment.UserId, err)
+		return
+	}
+
 	msg := WebHookMsg{
 		Timestamp:       entry.Timestamp,
 		Origin:          entry.Origin,
@@ -74,6 +95,10 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 		State:           deployment.State,
 		Comment:         deployment.Comment,
 		CreatedAt:       deployment.CreatedAt,
+		URL:             deploymentUrl,
+		DeployerID:      deployment.UserId,
+		DeployerName:    deployment.User.Name,
+		DeployerAvatar:  deployment.User.AvatarUrl,
 		TargetName:      target.Name,
 		DeploymentUser:  target.DeploymentUser,
 		DeployUsernames: target.DeployUsernames,
