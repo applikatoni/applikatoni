@@ -2,10 +2,8 @@ package main
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/json"
 
-	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
 
 	"log"
@@ -26,42 +24,18 @@ type slackMsg struct {
 	Text string `json:"text"`
 }
 
-func NotifySlack(db *sql.DB, entry deploy.LogEntry) {
-	deployment, err := getDeployment(db, entry.DeploymentId)
-	if err != nil {
-		log.Printf("Could not find deployment with id %v, %s\n", entry.DeploymentId, err)
+func NotifySlack(ev *DeploymentEvent) {
+	if ev.Target.SlackUrl == "" {
 		return
 	}
 
-	application, err := findApplication(deployment.ApplicationName)
-	if err != nil {
-		log.Printf("Could not find application with name %v, %s\n", deployment.ApplicationName, err)
-		return
-	}
-
-	target, err := findTarget(application, deployment.TargetName)
-	if err != nil {
-		log.Printf("Could not find target with name %v, %s\n", deployment.TargetName, err)
-		return
-	}
-
-	if target.SlackUrl == "" {
-		return
-	}
-
-	user, err := getUser(db, deployment.UserId)
-	if err != nil {
-		log.Printf("Could not find User with id %v, %s\n", deployment.UserId, err)
-		return
-	}
-
-	summary, err := generateSummary(slackTemplate, entry, application, deployment, user)
+	summary, err := generateSummary(slackTemplate, ev.Entry, ev.Application, ev.Deployment, ev.User)
 	if err != nil {
 		log.Printf("Could not generate Slack deployment summary, %s\n", err)
 		return
 	}
 
-	SendSlackRequest(deployment, target, application, summary)
+	SendSlackRequest(ev.Deployment, ev.Target, ev.Application, summary)
 }
 
 func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Application, summary string) {
@@ -86,16 +60,4 @@ func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Applicat
 
 	log.Printf("Successfully notified Slack about deployment of %s on %s, %s!\n",
 		d.ApplicationName, d.TargetName, d.CommitSha)
-}
-
-func newSlackNotifier(db *sql.DB) deploy.Listener {
-	fn := func(logs <-chan deploy.LogEntry) {
-		for entry := range logs {
-			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS || entry.EntryType == deploy.DEPLOYMENT_FAIL {
-				go NotifySlack(db, entry)
-			}
-		}
-	}
-
-	return fn
 }

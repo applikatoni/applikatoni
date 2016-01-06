@@ -147,16 +147,30 @@ func main() {
 	logRouter.SubscribeAll(deploy.ConsoleLogger)
 	// Setup the listener that persists all log entries
 	logRouter.SubscribeAll(newLogEntrySaver(db))
-	// Setup the bugsnag deployment tracking
-	logRouter.SubscribeAll(newBugsnagNotifier(db))
-	// Setup the flowdock deployment notifcation
-	logRouter.SubscribeAll(newFlowdockNotifier(db))
-	// Setup the new relic deployment notifcation
-	logRouter.SubscribeAll(newNewRelicNotifier(db))
-	// Setup the Slack deployment notifcation
-	logRouter.SubscribeAll(newSlackNotifier(db))
-	// Setup the Webhook notifcation
+	// Setup the Webhook notification
 	logRouter.SubscribeAll(newWebHookNotifier(db))
+	// Setup the bugsnag deployment tracking
+	bugsnag := NewDeploymentListener(db, NotifyBugsnag, []deploy.LogEntryType{
+		deploy.DEPLOYMENT_SUCCESS,
+	})
+	logRouter.SubscribeAll(bugsnag)
+	// Setup the new relic deployment notifcation
+	newRelic := NewDeploymentListener(db, NotifyNewRelic, []deploy.LogEntryType{
+		deploy.DEPLOYMENT_SUCCESS,
+	})
+	logRouter.SubscribeAll(newRelic)
+	// Setup the flowdock deployment notifcation
+	flowdock := NewDeploymentListener(db, NotifyFlowdock, []deploy.LogEntryType{
+		deploy.DEPLOYMENT_FAIL,
+		deploy.DEPLOYMENT_SUCCESS,
+	})
+	logRouter.SubscribeAll(flowdock)
+	// Setup the Slack deployment notifcation
+	slack := NewDeploymentListener(db, NotifySlack, []deploy.LogEntryType{
+		deploy.DEPLOYMENT_FAIL,
+		deploy.DEPLOYMENT_SUCCESS,
+	})
+	logRouter.SubscribeAll(slack)
 
 	// Setup the router and the routes
 	r := mux.NewRouter()
