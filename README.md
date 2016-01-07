@@ -276,8 +276,10 @@ Unicorn webserver and Sidekiq as a background worker process.
           "new_relic_app_id": "<NEW RELIC APP ID>",
           "slack_url": "<SLACK INCOMING WEBHOOK URL>",
           "webhooks": [
-            "http://localhost:9999/telegrambrdige/",
-            "http://someService/applikatoni"
+            {
+              "url": "<URL>",
+              "entries": ["<ENTRYTYPE>"]
+            }
           ],
           "hosts": [
             {

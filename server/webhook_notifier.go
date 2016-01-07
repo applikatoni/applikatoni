@@ -13,39 +13,44 @@ import (
 	"github.com/applikatoni/applikatoni/models"
 )
 
-type WebHookMsg struct {
-	Timestamp time.Time           `json:"timestamp"`
-	Origin    string              `json:"origin"`
-	EntryType deploy.LogEntryType `json:"entry_type"`
-	Message   string              `json:"message"`
+type Application struct {
+	Name        string `json:"application_name"`
+	GitHubOwner string `json:"github_owner"`
+	GitHubRepo  string `json:"github_repo"`
+}
 
-	// Application
-	ApplicationName string `json:"application_name"`
-	GitHubOwner     string `json:"github_owner"`
-	GitHubRepo      string `json:"github_repo"`
+type Deployment struct {
+	Id             int                    `json:"deployment_id"`
+	CommitSha      string                 `json:"commit_sha"`
+	Branch         string                 `json:"branch"`
+	State          models.DeploymentState `json:"state"`
+	Comment        string                 `json:"comment"`
+	CreatedAt      time.Time              `json:"created_at"`
+	URL            string                 `json:"deployment_url"`
+	DeployerID     int                    `json:"deployer_id"`
+	DeployerName   string                 `json:"deployer_name"`
+	DeployerAvatar string                 `json:"deployer_avatar"`
+}
 
-	// Deployment
-	DeploymentId int                    `json:"deployment_id"`
-	CommitSha    string                 `json:"commit_sha"`
-	Branch       string                 `json:"branch"`
-	State        models.DeploymentState `json:"state"`
-	Comment      string                 `json:"comment"`
-	CreatedAt    time.Time              `json:"created_at"`
-	URL          string                 `json:"deployment_url"`
-
-	// Deployer
-	DeployerID     int    `json:"deployer_id"`
-	DeployerName   string `json:"deployer_name"`
-	DeployerAvatar string `json:"deployer_avatar"`
-
-	// Target
-	TargetName      string                   `json:"target_name"`
+type Target struct {
+	Name            string                   `json:"target_name"`
 	DeploymentUser  string                   `json:"deployment_user"`
 	DeployUsernames []string                 `json:"deploy_usernames"`
 	Hosts           []*models.Host           `json:"hosts"`
 	Roles           []*models.Role           `json:"roles"`
 	AvailableStages []models.DeploymentStage `json:"available_stages"`
 	DefaultStages   []models.DeploymentStage `json:"default_stages"`
+}
+
+type WebHookMsg struct {
+	Timestamp time.Time           `json:"timestamp"`
+	Origin    string              `json:"origin"`
+	EntryType deploy.LogEntryType `json:"entry_type"`
+	Message   string              `json:"message"`
+
+	Application Application `json:"application"`
+	Deployment  Deployment  `json:"deployment"`
+	Target      Target      `json:"target"`
 }
 
 func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
@@ -67,6 +72,10 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 		return
 	}
 
+	if len(target.Webhooks) == 0 {
+		return
+	}
+
 	scheme := "http"
 	if config.SSLEnabled {
 		scheme = "https"
@@ -82,33 +91,39 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 	}
 
 	msg := WebHookMsg{
-		Timestamp:       entry.Timestamp,
-		Origin:          entry.Origin,
-		EntryType:       entry.EntryType,
-		Message:         entry.Message,
-		ApplicationName: application.Name,
-		GitHubOwner:     application.GitHubOwner,
-		GitHubRepo:      application.GitHubRepo,
-		DeploymentId:    deployment.Id,
-		CommitSha:       deployment.CommitSha,
-		Branch:          deployment.Branch,
-		State:           deployment.State,
-		Comment:         deployment.Comment,
-		CreatedAt:       deployment.CreatedAt,
-		URL:             deploymentUrl,
-		DeployerID:      deployment.UserId,
-		DeployerName:    deployment.User.Name,
-		DeployerAvatar:  deployment.User.AvatarUrl,
-		TargetName:      target.Name,
-		DeploymentUser:  target.DeploymentUser,
-		DeployUsernames: target.DeployUsernames,
-		Hosts:           target.Hosts,
-		Roles:           target.Roles,
-		AvailableStages: target.AvailableStages,
-		DefaultStages:   target.DefaultStages,
+		Timestamp: entry.Timestamp,
+		Origin:    entry.Origin,
+		EntryType: entry.EntryType,
+		Message:   entry.Message,
+		Application: Application{
+			Name:        application.Name,
+			GitHubOwner: application.GitHubOwner,
+			GitHubRepo:  application.GitHubRepo,
+		},
+		Deployment: Deployment{
+			Id:             deployment.Id,
+			CommitSha:      deployment.CommitSha,
+			Branch:         deployment.Branch,
+			State:          deployment.State,
+			Comment:        deployment.Comment,
+			CreatedAt:      deployment.CreatedAt,
+			URL:            deploymentUrl,
+			DeployerID:     deployment.UserId,
+			DeployerName:   deployment.User.Name,
+			DeployerAvatar: deployment.User.AvatarUrl,
+		},
+		Target: Target{
+			Name:            target.Name,
+			DeploymentUser:  target.DeploymentUser,
+			DeployUsernames: target.DeployUsernames,
+			Hosts:           target.Hosts,
+			Roles:           target.Roles,
+			AvailableStages: target.AvailableStages,
+			DefaultStages:   target.DefaultStages,
+		},
 	}
 
-	for _, w := range target.WebHooks {
+	for _, w := range target.Webhooks {
 		if w.IsEntryWanted(string(entry.EntryType)) {
 			go sendWebhookMsg(w.URL, msg)
 		}
@@ -122,18 +137,19 @@ func sendWebhookMsg(hook string, msg WebHookMsg) {
 		return
 	}
 
-	_, err = http.Post(hook, "application/json", bytes.NewBuffer(payload))
+	resp, err := http.Post(hook, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
 		log.Printf("Error while notifying Webhook %s about deployment of %v on %v! err: %s\n",
 			hook,
-			msg.ApplicationName,
-			msg.TargetName,
+			msg.Application.Name,
+			msg.Target.Name,
 			err)
 	} else {
-		log.Printf("Successfully notified Webhook %s about deployment of %v on %v!\n",
+		log.Printf("Notified Webhook %s about deployment of %v on %v! Response: %v",
 			hook,
-			msg.ApplicationName,
-			msg.TargetName)
+			msg.Application.Name,
+			msg.Target.Name,
+			resp.Status)
 	}
 }
 
