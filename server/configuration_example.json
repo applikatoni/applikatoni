@@ -31,12 +31,8 @@
           "slack_url": "<SLACK INCOMING WEBHOOK URL>",
           "webhooks": [
             {
-              "url": "http://localhost:9999/telegrambridge/",
-              "entries": ["DEPLOYMENT_FAIL"]
-            },
-            {
-              "url": "http://localhost:9999/buzzer/",
-              "filter": ["DEPLOYMENT_FAIL", "KILL_RECEIVED"]
+              "url": "<URL>",
+              "entries": ["<ENTRYTYPE>"]
             }
           ],
           "hosts": [

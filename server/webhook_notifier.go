@@ -13,13 +13,13 @@ import (
 	"github.com/applikatoni/applikatoni/models"
 )
 
-type Application struct {
+type WebhookApplication struct {
 	Name        string `json:"application_name"`
 	GitHubOwner string `json:"github_owner"`
 	GitHubRepo  string `json:"github_repo"`
 }
 
-type Deployment struct {
+type WebhookDeployment struct {
 	Id             int                    `json:"deployment_id"`
 	CommitSha      string                 `json:"commit_sha"`
 	Branch         string                 `json:"branch"`
@@ -32,7 +32,7 @@ type Deployment struct {
 	DeployerAvatar string                 `json:"deployer_avatar"`
 }
 
-type Target struct {
+type WebhookTarget struct {
 	Name            string                   `json:"target_name"`
 	DeploymentUser  string                   `json:"deployment_user"`
 	DeployUsernames []string                 `json:"deploy_usernames"`
@@ -42,15 +42,15 @@ type Target struct {
 	DefaultStages   []models.DeploymentStage `json:"default_stages"`
 }
 
-type WebHookMsg struct {
+type WebhookMsg struct {
 	Timestamp time.Time           `json:"timestamp"`
 	Origin    string              `json:"origin"`
 	EntryType deploy.LogEntryType `json:"entry_type"`
 	Message   string              `json:"message"`
 
-	Application Application `json:"application"`
-	Deployment  Deployment  `json:"deployment"`
-	Target      Target      `json:"target"`
+	Application WebhookApplication `json:"application"`
+	Deployment  WebhookDeployment  `json:"deployment"`
+	Target      WebhookTarget      `json:"target"`
 }
 
 func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
@@ -90,17 +90,17 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 		return
 	}
 
-	msg := WebHookMsg{
+	msg := WebhookMsg{
 		Timestamp: entry.Timestamp,
 		Origin:    entry.Origin,
 		EntryType: entry.EntryType,
 		Message:   entry.Message,
-		Application: Application{
+		Application: WebhookApplication{
 			Name:        application.Name,
 			GitHubOwner: application.GitHubOwner,
 			GitHubRepo:  application.GitHubRepo,
 		},
-		Deployment: Deployment{
+		Deployment: WebhookDeployment{
 			Id:             deployment.Id,
 			CommitSha:      deployment.CommitSha,
 			Branch:         deployment.Branch,
@@ -112,7 +112,7 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 			DeployerName:   deployment.User.Name,
 			DeployerAvatar: deployment.User.AvatarUrl,
 		},
-		Target: Target{
+		Target: WebhookTarget{
 			Name:            target.Name,
 			DeploymentUser:  target.DeploymentUser,
 			DeployUsernames: target.DeployUsernames,
@@ -130,7 +130,7 @@ func NotifyWebhooks(db *sql.DB, entry deploy.LogEntry) {
 	}
 }
 
-func sendWebhookMsg(hook string, msg WebHookMsg) {
+func sendWebhookMsg(hook string, msg WebhookMsg) {
 	payload, err := json.Marshal(msg)
 	if err != nil {
 		log.Printf("Error creating WebhookMsg %s\n", err)
