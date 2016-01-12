@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Add generic webhooks that Applikatoni sends a payload to via HTTP to
+  on certain events (PR 31, wind0r)
 * Add ASCII banner (Issue 28, wind0r)
 
 ## 1.2.1 - 18. December 2015
