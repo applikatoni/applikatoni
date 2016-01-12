@@ -155,6 +155,8 @@ func main() {
 	logRouter.SubscribeAll(newNewRelicNotifier(db))
 	// Setup the Slack deployment notifcation
 	logRouter.SubscribeAll(newSlackNotifier(db))
+	// Setup the Webhook notifcation
+	logRouter.SubscribeAll(newWebHookNotifier(db))
 
 	// Setup the router and the routes
 	r := mux.NewRouter()

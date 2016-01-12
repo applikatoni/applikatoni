@@ -14,6 +14,7 @@ type Target struct {
 	NewRelicApiKey   string            `json:"new_relic_api_key"`
 	NewRelicAppId    string            `json:"new_relic_app_id"`
 	SlackUrl         string            `json:"slack_url"`
+	Webhooks         []Webhook         `json:"webhooks"`
 }
 
 func (t *Target) IsDeployer(userName string) bool {
