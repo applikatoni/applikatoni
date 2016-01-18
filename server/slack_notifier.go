@@ -79,7 +79,7 @@ func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Applicat
 		return
 	}
 	if resp.StatusCode != 200 {
-		log.Printf("Notifying Slack failed (%s on %s, %s): status=%s\n",
+		log.Printf("Notifying Slack failed (%s on %s, %s): status=%d\n",
 			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
 		return
 	}

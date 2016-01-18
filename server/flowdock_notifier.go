@@ -75,7 +75,7 @@ func SendFlowdockRequest(endpoint string, d *models.Deployment, summary string) 
 		return
 	}
 	if resp.StatusCode != 201 {
-		log.Printf("Notifying Flowdock failed (%s on %s, %s): status=%s\n",
+		log.Printf("Notifying Flowdock failed (%s on %s, %s): status=%d\n",
 			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
 		return
 	}

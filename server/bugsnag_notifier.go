@@ -57,7 +57,7 @@ func SendBugsnagRequest(endpoint string, d *models.Deployment, t *models.Target,
 		return
 	}
 	if resp.StatusCode != 200 {
-		log.Printf("Notifying Bugsnag failed (%s on %s, %s): status=%s\n",
+		log.Printf("Notifying Bugsnag failed (%s on %s, %s): status=%d\n",
 			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
 		return
 	}

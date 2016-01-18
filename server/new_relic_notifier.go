@@ -84,8 +84,8 @@ func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deploymen
 		return
 	}
 	if resp.StatusCode != 201 {
-		log.Printf("Notifying NewRelic failed (%s on %s, %s): status=%s\n",
-			d.ApplicationName, d.TargetName, d.CommitSha, resp.Status)
+		log.Printf("Notifying NewRelic failed (%s on %s, %s): status=%d\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
 		return
 	}
 
