@@ -73,18 +73,19 @@ func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Applicat
 	}
 
 	resp, err := http.Post(t.SlackUrl, "application/json", bytes.NewBuffer(payload))
-
-	if err != nil || resp.StatusCode != 200 {
-		log.Printf("Error while notifying Slack about deployment of %v on %v, %v! err: %s, resp: %s\n",
-			d.ApplicationName,
-			d.TargetName,
-			d.CommitSha,
-			err,
-			resp.Status)
+	if err != nil {
+		log.Printf("Notifying Slack failed (%s on %s, %s): err=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, err)
+		return
+	}
+	if resp.StatusCode != 200 {
+		log.Printf("Notifying Slack failed (%s on %s, %s): status=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
 		return
 	}
 
-	log.Printf("Successfully notified Slack about deployment of %v on %v, %v!\n", d.ApplicationName, d.TargetName, d.CommitSha)
+	log.Printf("Successfully notified Slack about deployment of %s on %s, %s!\n",
+		d.ApplicationName, d.TargetName, d.CommitSha)
 }
 
 func newSlackNotifier(db *sql.DB) deploy.Listener {

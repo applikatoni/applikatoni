@@ -78,13 +78,14 @@ func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deploymen
 	req.Header.Set("x-api-key", t.NewRelicApiKey)
 
 	resp, err := client.Do(req)
-	if err != nil || resp.StatusCode != 201 {
-		log.Printf("Error while notifying New Relic about deployment of %v on %v, %v! err: %s, resp: %s\n",
-			d.ApplicationName,
-			d.TargetName,
-			d.CommitSha,
-			err,
-			resp.Status)
+	if err != nil {
+		log.Printf("Notifying NewRelic failed (%s on %s, %s): err=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, err)
+		return
+	}
+	if resp.StatusCode != 201 {
+		log.Printf("Notifying NewRelic failed (%s on %s, %s): status=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, resp.Status)
 		return
 	}
 

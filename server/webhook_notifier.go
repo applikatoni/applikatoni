@@ -140,17 +140,12 @@ func sendWebhookMsg(hook string, msg WebhookMsg) {
 	resp, err := http.Post(hook, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
 		log.Printf("Error while notifying Webhook %s about deployment of %v on %v! err: %s\n",
-			hook,
-			msg.Application.Name,
-			msg.Target.Name,
-			err)
-	} else {
-		log.Printf("Notified Webhook %s about deployment of %v on %v! Response: %v",
-			hook,
-			msg.Application.Name,
-			msg.Target.Name,
-			resp.Status)
+			hook, msg.Application.Name, msg.Target.Name, err)
+		return
 	}
+
+	log.Printf("Notified Webhook %s about deployment of %v on %v! Response: %v",
+		hook, msg.Application.Name, msg.Target.Name, resp.Status)
 }
 
 func newWebHookNotifier(db *sql.DB) deploy.Listener {

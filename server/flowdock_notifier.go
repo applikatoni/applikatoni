@@ -70,18 +70,18 @@ func SendFlowdockRequest(endpoint string, d *models.Deployment, summary string) 
 
 	resp, err := http.PostForm(endpoint, params)
 	if err != nil || resp.StatusCode != 201 {
-		log.Printf("Error while notifying Flowdock about deployment of %v on %v, %v! err: %s, resp: %s\n",
-			d.ApplicationName,
-			d.TargetName,
-			d.CommitSha,
-			err,
-			resp.Status)
-	} else {
-		log.Printf("Successfully notified Flowdock about deployment of %v on %v, %v!\n",
-			d.ApplicationName,
-			d.TargetName,
-			d.CommitSha)
+		log.Printf("Notifying Flowdock failed (%s on %s, %s): err=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, err)
+		return
 	}
+	if resp.StatusCode != 201 {
+		log.Printf("Notifying Flowdock failed (%s on %s, %s): status=%s\n",
+			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
+		return
+	}
+
+	log.Printf("Successfully notified Flowdock about deployment of %s on %s, %s!\n",
+		d.ApplicationName, d.TargetName, d.CommitSha)
 }
 
 func newFlowdockNotifier(db *sql.DB) deploy.Listener {

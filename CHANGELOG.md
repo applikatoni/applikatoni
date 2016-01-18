@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Fix nil-pointer dereference in notifiers when `err` is set and
+  `resp.StatusCode` is being accessed (Issue 33, mrnugget)
 * Add generic webhooks that Applikatoni sends a payload to via HTTP to
   on certain events (PR 31, wind0r)
 * Add ASCII banner (Issue 28, wind0r)
