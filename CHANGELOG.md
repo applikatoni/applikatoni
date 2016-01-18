@@ -2,11 +2,15 @@
 
 ## Unreleased
 
+## 1.3.0 - 18. January 2016
+
 * Fix nil-pointer dereference in notifiers when `err` is set and
   `resp.StatusCode` is being accessed (Issue 33, mrnugget)
 * Add generic webhooks that Applikatoni sends a payload to via HTTP to
   on certain events (PR 31, wind0r)
 * Add ASCII banner (Issue 28, wind0r)
+
+Diff: https://github.com/applikatoni/applikatoni/compare/1.2.1...1.3.0
 
 ## 1.2.1 - 18. December 2015
 

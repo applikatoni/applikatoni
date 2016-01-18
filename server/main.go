@@ -26,7 +26,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-const VERSION = "1.2.1"
+const VERSION = "1.3.0"
 const BANNER = `
                   ___
                  |  ~~--.                      _ _ _         _              _
