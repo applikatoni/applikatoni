@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-GO_ARCHIVE = "go1.5.2.linux-amd64.tar.gz"
+GO_ARCHIVE = "go1.5.3.linux-amd64.tar.gz"
 
 Vagrant.configure(2) do |config|
   config.vm.box = "ubuntu/trusty64"
