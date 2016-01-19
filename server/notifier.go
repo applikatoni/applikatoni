@@ -38,7 +38,7 @@ func NewDeploymentEvent(e deploy.LogEntry) (*DeploymentEvent, error) {
 
 	user, err := getUser(db, deployment.UserId)
 	if err != nil {
-		err = fmt.Errorf("Could not find User with id %id, %s\n", deployment.UserId, err)
+		err = fmt.Errorf("Could not find User with id %d, %s\n", deployment.UserId, err)
 		return nil, err
 	}
 
