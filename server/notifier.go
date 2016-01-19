@@ -17,8 +17,6 @@ type DeploymentEvent struct {
 	User        *models.User
 }
 
-type DeploymentNotifier func(*DeploymentEvent)
-
 func NewDeploymentEvent(e deploy.LogEntry) (*DeploymentEvent, error) {
 	deployment, err := getDeployment(db, e.DeploymentId)
 	if err != nil {
@@ -55,7 +53,9 @@ func NewDeploymentEvent(e deploy.LogEntry) (*DeploymentEvent, error) {
 	return event, nil
 }
 
-func NewDeploymentListener(db *sql.DB, fn DeploymentNotifier, evs []deploy.LogEntryType) deploy.Listener {
+type Notifier func(*DeploymentEvent)
+
+func NewDeploymentListener(db *sql.DB, fn Notifier, evs []deploy.LogEntryType) deploy.Listener {
 	return func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
 			for _, entryType := range evs {
