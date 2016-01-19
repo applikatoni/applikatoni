@@ -66,7 +66,7 @@ func NewDeploymentListener(db *sql.DB, fn Notifier, evs []deploy.LogEntryType) d
 				go func() {
 					event, err := NewDeploymentEvent(entry)
 					if err != nil {
-						log.Printf("Not calling success notifier. error=%s\n", err)
+						log.Printf("Error creating DeploymentEvent. error=%s\n", err)
 						return
 					}
 
