@@ -69,7 +69,7 @@ func SendFlowdockRequest(endpoint string, d *models.Deployment, summary string) 
 	}
 
 	resp, err := http.PostForm(endpoint, params)
-	if err != nil || resp.StatusCode != 201 {
+	if err != nil {
 		log.Printf("Notifying Flowdock failed (%s on %s, %s): err=%s\n",
 			d.ApplicationName, d.TargetName, d.CommitSha, err)
 		return
