@@ -9,8 +9,6 @@ import (
 
 	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
-
-	"database/sql"
 )
 
 const (
@@ -25,36 +23,10 @@ URL: {{.DeploymentURL}}
 
 var newRelicTemplate = template.Must(template.New("newRelicSummary").Parse(newRelicTmplStr))
 
-func NotifyNewRelic(db *sql.DB, entry deploy.LogEntry) {
-	deployment, err := getDeployment(db, entry.DeploymentId)
-	if err != nil {
-		log.Printf("Could not find deployment with id %v, %s\n", entry.DeploymentId, err)
-		return
+func NotifyNewRelic(ev *DeploymentEvent) {
+	if ev.Target.NewRelicApiKey != "" && ev.Target.NewRelicAppId != "" {
+		SendNewRelicRequest(newRelicNotifyEndpoint, ev.Entry, ev.Deployment, ev.Target, ev.Application, ev.User)
 	}
-
-	application, err := findApplication(deployment.ApplicationName)
-	if err != nil {
-		log.Printf("Could not find application with name %v, %s\n", deployment.ApplicationName, err)
-		return
-	}
-
-	target, err := findTarget(application, deployment.TargetName)
-	if err != nil {
-		log.Printf("Could not find target with name %v, %s\n", deployment.TargetName, err)
-		return
-	}
-
-	user, err := getUser(db, deployment.UserId)
-	if err != nil {
-		log.Printf("Could not find User with id %v, %s\n", deployment.UserId, err)
-		return
-	}
-
-	if target.NewRelicApiKey == "" || target.NewRelicAppId == "" {
-		return
-	}
-
-	SendNewRelicRequest(newRelicNotifyEndpoint, entry, deployment, target, application, user)
 }
 
 func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deployment, t *models.Target, a *models.Application, u *models.User) {
@@ -90,16 +62,4 @@ func SendNewRelicRequest(endpoint string, e deploy.LogEntry, d *models.Deploymen
 	}
 
 	log.Printf("Successfully notified New Relic about deployment of %v on %v, %v!\n", d.ApplicationName, d.TargetName, d.CommitSha)
-}
-
-func newNewRelicNotifier(db *sql.DB) deploy.Listener {
-	fn := func(logs <-chan deploy.LogEntry) {
-		for entry := range logs {
-			if entry.EntryType == deploy.DEPLOYMENT_SUCCESS {
-				go NotifyNewRelic(db, entry)
-			}
-		}
-	}
-
-	return fn
 }
