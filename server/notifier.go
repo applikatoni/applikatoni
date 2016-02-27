@@ -72,7 +72,7 @@ func NewDeploymentListener(db *sql.DB, fn Notifier, evs []deploy.LogEntryType) d
 				if entry.EntryType != entryType {
 					continue
 				}
-				callNotifier(entry)
+				go callNotifier(entry)
 			}
 		}
 	}
