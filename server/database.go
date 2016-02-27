@@ -6,6 +6,8 @@ import (
 	"strings"
 	"time"
 
+	"bitbucket.org/liamstask/goose/lib/goose"
+
 	"github.com/pborman/uuid"
 
 	"github.com/applikatoni/applikatoni/deploy"
@@ -383,4 +385,27 @@ func queryDeploymentRow(db *sql.DB, query string, args ...interface{}) (*models.
 	d.State = models.DeploymentState(state)
 
 	return d, nil
+}
+
+func isMigrated(db *sql.DB) (bool, error) {
+	dbconf, err := goose.NewDBConf(*dbConfDir, *env, "")
+	if err != nil {
+		return false, err
+	}
+
+	currentVersion, err := goose.EnsureDBVersion(dbconf, db)
+	if err != nil {
+		return false, err
+	}
+
+	newestVersion, err := goose.GetMostRecentDBVersion(*migrationDir)
+	if err != nil {
+		return false, err
+	}
+
+	if currentVersion != newestVersion {
+		return false, nil
+	}
+
+	return true, nil
 }

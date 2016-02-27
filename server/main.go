@@ -9,8 +9,6 @@ import (
 	"os"
 	"syscall"
 
-	"bitbucket.org/liamstask/goose/lib/goose"
-
 	"golang.org/x/crypto/ssh/terminal"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/github"
@@ -106,7 +104,7 @@ func main() {
 	}
 	defer db.Close()
 
-	migrated, err := isDBMigrated(db)
+	migrated, err := isMigrated(db)
 	if err != nil {
 		log.Fatal("could not check if database is migrated. Error: ", err)
 	}
@@ -211,27 +209,4 @@ func main() {
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
-}
-
-func isDBMigrated(db *sql.DB) (bool, error) {
-	dbconf, err := goose.NewDBConf(*dbConfDir, *env, "")
-	if err != nil {
-		return false, err
-	}
-
-	currentVersion, err := goose.EnsureDBVersion(dbconf, db)
-	if err != nil {
-		return false, err
-	}
-
-	newestVersion, err := goose.GetMostRecentDBVersion(*migrationDir)
-	if err != nil {
-		return false, err
-	}
-
-	if currentVersion != newestVersion {
-		return false, nil
-	}
-
-	return true, nil
 }
