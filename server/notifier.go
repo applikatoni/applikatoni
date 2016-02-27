@@ -56,22 +56,23 @@ func NewDeploymentEvent(e deploy.LogEntry) (*DeploymentEvent, error) {
 type Notifier func(*DeploymentEvent)
 
 func NewDeploymentListener(db *sql.DB, fn Notifier, evs []deploy.LogEntryType) deploy.Listener {
+	callNotifier := func(entry deploy.LogEntry) {
+		event, err := NewDeploymentEvent(entry)
+		if err != nil {
+			log.Printf("Error creating DeploymentEvent. error=%s\n", err)
+			return
+		}
+
+		fn(event)
+	}
+
 	return func(logs <-chan deploy.LogEntry) {
 		for entry := range logs {
 			for _, entryType := range evs {
 				if entry.EntryType != entryType {
 					continue
 				}
-
-				go func() {
-					event, err := NewDeploymentEvent(entry)
-					if err != nil {
-						log.Printf("Error creating DeploymentEvent. error=%s\n", err)
-						return
-					}
-
-					fn(event)
-				}()
+				callNotifier(entry)
 			}
 		}
 	}
