@@ -5,8 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/applikatoni/applikatoni/models"
-
 	"log"
 	"net/http"
 	"text/template"
@@ -30,16 +28,16 @@ func NotifySlack(db *sql.DB, ev *DeploymentEvent) {
 		return
 	}
 
-	summary, err := generateSummary(slackTemplate, ev.Entry, ev.Application, ev.Deployment, ev.User)
+	summary, err := generateSummary(slackTemplate, ev)
 	if err != nil {
 		log.Printf("Could not generate Slack deployment summary, %s\n", err)
 		return
 	}
 
-	SendSlackRequest(ev.Deployment, ev.Target, ev.Application, summary)
+	SendSlackRequest(ev, summary)
 }
 
-func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Application, summary string) {
+func SendSlackRequest(ev *DeploymentEvent, summary string) {
 	payload, err := json.Marshal(slackMsg{Text: summary})
 
 	if err != nil {
@@ -47,18 +45,19 @@ func SendSlackRequest(d *models.Deployment, t *models.Target, a *models.Applicat
 		return
 	}
 
-	resp, err := http.Post(t.SlackUrl, "application/json", bytes.NewBuffer(payload))
+	resp, err := http.Post(ev.Target.SlackUrl, "application/json", bytes.NewBuffer(payload))
 	if err != nil {
 		log.Printf("Notifying Slack failed (%s on %s, %s): err=%s\n",
-			d.ApplicationName, d.TargetName, d.CommitSha, err)
+			ev.Application.Name, ev.Target.Name, ev.Deployment.CommitSha, err)
 		return
 	}
 	if resp.StatusCode != 200 {
 		log.Printf("Notifying Slack failed (%s on %s, %s): status=%d\n",
-			d.ApplicationName, d.TargetName, d.CommitSha, resp.StatusCode)
+			ev.Application.Name, ev.Target.Name, ev.Deployment.CommitSha,
+			resp.StatusCode)
 		return
 	}
 
 	log.Printf("Successfully notified Slack about deployment of %s on %s, %s!\n",
-		d.ApplicationName, d.TargetName, d.CommitSha)
+		ev.Application.Name, ev.Target.Name, ev.Deployment.CommitSha)
 }

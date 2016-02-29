@@ -26,7 +26,7 @@ func NotifyFlowdock(db *sql.DB, ev *DeploymentEvent) {
 		return
 	}
 
-	summary, err := generateSummary(flowdockTemplate, ev.Entry, ev.Application, ev.Deployment, ev.User)
+	summary, err := generateSummary(flowdockTemplate, ev)
 	if err != nil {
 		log.Printf("Could not generate deployment summary, %s\n", err)
 		return

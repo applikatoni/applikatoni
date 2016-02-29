@@ -17,9 +17,21 @@ func TestNotifyBugsnag(t *testing.T) {
 	}
 
 	deployment := &models.Deployment{
+		State:      models.DEPLOYMENT_SUCCESSFUL,
 		TargetName: target.Name,
 		Branch:     "master",
 		CommitSha:  "f00b4r",
+	}
+
+	user := &models.User{
+		Name: "Foo Bar",
+	}
+
+	event := &DeploymentEvent{
+		Deployment:  deployment,
+		Application: application,
+		Target:      target,
+		User:        user,
 	}
 
 	tests := []struct {
@@ -46,5 +58,5 @@ func TestNotifyBugsnag(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	SendBugsnagRequest(ts.URL, deployment, target, application)
+	SendBugsnagRequest(ts.URL, event)
 }

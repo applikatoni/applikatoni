@@ -7,7 +7,6 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
 )
 
@@ -15,8 +14,6 @@ func TestSendNewRelicRequest(t *testing.T) {
 	config = &Configuration{Host: "example.com", SSLEnabled: true}
 
 	user := &models.User{Name: "mrnugget"}
-	entry := deploy.LogEntry{EntryType: deploy.DEPLOYMENT_SUCCESS}
-
 	target := &models.Target{
 		Name:           "staging",
 		NewRelicAppId:  "12345",
@@ -37,7 +34,14 @@ func TestSendNewRelicRequest(t *testing.T) {
 		Comment:         "hi",
 	}
 
-	expectedSummary, err := generateSummary(newRelicTemplate, entry, application, deployment, user)
+	event := &DeploymentEvent{
+		Deployment:  deployment,
+		Application: application,
+		Target:      target,
+		User:        user,
+	}
+
+	expectedSummary, err := generateSummary(newRelicTemplate, event)
 	if err != nil {
 		t.Errorf("generating test summary failed: %s\n", err)
 		return
@@ -87,5 +91,5 @@ func TestSendNewRelicRequest(t *testing.T) {
 
 	defer ts.Close()
 
-	SendNewRelicRequest(ts.URL, entry, deployment, target, application, user)
+	SendNewRelicRequest(ts.URL, event)
 }
