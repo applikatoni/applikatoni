@@ -53,22 +53,18 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 }
 
 func (hub *DeploymentEventHub) buildDeploymentEvent(d *models.Deployment) (*DeploymentEvent, error) {
-	deployment, err := getDeployment(hub.db, d.Id)
+	user, err := getUser(hub.db, d.UserId)
 	if err != nil {
 		return nil, err
 	}
+	d.User = user
 
 	application, err := findApplication(d.ApplicationName)
 	if err != nil {
 		return nil, err
 	}
 
-	target, err := findTarget(application, deployment.TargetName)
-	if err != nil {
-		return nil, err
-	}
-
-	user, err := getUser(hub.db, deployment.UserId)
+	target, err := findTarget(application, d.TargetName)
 	if err != nil {
 		return nil, err
 	}

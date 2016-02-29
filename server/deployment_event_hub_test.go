@@ -47,6 +47,13 @@ func TestPublish(t *testing.T) {
 			t.Errorf("subscriber called with wrong deployment event")
 		}
 
+		if ev.Deployment.User == nil {
+			t.Errorf("deployment user in event not set")
+		}
+		if ev.Deployment.User.Id != user.Id {
+			t.Errorf("deployment user is wrong")
+		}
+
 		if ev.Application != application {
 			t.Errorf("deployment event has wrong application")
 		}
