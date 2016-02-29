@@ -28,7 +28,7 @@ func NewDeploymentEventHub(db *sql.DB) *DeploymentEventHub {
 	return hub
 }
 
-func (hub *DeploymentEventHub) Subscribe(s Subscriber, states []models.DeploymentState) {
+func (hub *DeploymentEventHub) Subscribe(states []models.DeploymentState, s Subscriber) {
 	for _, state := range states {
 		hub.Subscribers[state] = append(hub.Subscribers[state], s)
 	}

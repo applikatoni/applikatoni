@@ -8,13 +8,10 @@ import (
 )
 
 func TestSubscribe(t *testing.T) {
-	db := newTestDb(t)
-	defer cleanCloseTestDb(db, t)
-
 	testSubscriber := func(db *sql.DB, ev *DeploymentEvent) {}
 
-	hub := NewDeploymentEventHub(db)
-	hub.Subscribe(testSubscriber, []models.DeploymentState{models.DEPLOYMENT_NEW})
+	hub := NewDeploymentEventHub(&sql.DB{})
+	hub.Subscribe([]models.DeploymentState{models.DEPLOYMENT_NEW}, testSubscriber)
 
 	if len(hub.Subscribers[models.DEPLOYMENT_NEW]) != 1 {
 		t.Errorf("subscriber not added.")
@@ -62,7 +59,7 @@ func TestPublish(t *testing.T) {
 	}
 
 	hub := NewDeploymentEventHub(db)
-	hub.Subscribe(testSubscriber, []models.DeploymentState{models.DEPLOYMENT_NEW})
+	hub.Subscribe([]models.DeploymentState{models.DEPLOYMENT_NEW}, testSubscriber)
 
 	hub.Publish(models.DEPLOYMENT_NEW, deployment)
 
