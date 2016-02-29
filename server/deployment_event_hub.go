@@ -2,7 +2,7 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 
 	"github.com/applikatoni/applikatoni/models"
 )
@@ -40,25 +40,37 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 		return
 	}
 
+	event, err := hub.buildDeploymentEvent(d)
+	if err != nil {
+		log.Printf("Building deployment for deployment %d failed: %s\n", d.Id,
+			err)
+		return
+	}
+
+	for _, subscriber := range subscribers {
+		go subscriber(hub.db, event)
+	}
+}
+
+func (hub *DeploymentEventHub) buildDeploymentEvent(d *models.Deployment) (*DeploymentEvent, error) {
 	deployment, err := getDeployment(hub.db, d.Id)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	application, err := findApplication(d.ApplicationName)
 	if err != nil {
-		err = fmt.Errorf("Could not find application with name %q, %s\n", deployment.ApplicationName, err)
-		return
+		return nil, err
 	}
 
 	target, err := findTarget(application, deployment.TargetName)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	user, err := getUser(hub.db, deployment.UserId)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	event := &DeploymentEvent{
@@ -68,7 +80,5 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 		User:        user,
 	}
 
-	for _, subscriber := range subscribers {
-		go subscriber(hub.db, event)
-	}
+	return event, nil
 }
