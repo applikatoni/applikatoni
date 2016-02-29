@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"encoding/json"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -24,7 +25,7 @@ type slackMsg struct {
 	Text string `json:"text"`
 }
 
-func NotifySlack(ev *DeploymentEvent) {
+func NotifySlack(db *sql.DB, ev *DeploymentEvent) {
 	if ev.Target.SlackUrl == "" {
 		return
 	}

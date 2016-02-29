@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"database/sql"
 	"log"
 	"net/http"
 	"net/url"
@@ -23,7 +24,7 @@ URL: {{.DeploymentURL}}
 
 var newRelicTemplate = template.Must(template.New("newRelicSummary").Parse(newRelicTmplStr))
 
-func NotifyNewRelic(ev *DeploymentEvent) {
+func NotifyNewRelic(db *sql.DB, ev *DeploymentEvent) {
 	if ev.Target.NewRelicApiKey != "" && ev.Target.NewRelicAppId != "" {
 		SendNewRelicRequest(newRelicNotifyEndpoint, ev.Entry, ev.Deployment, ev.Target, ev.Application, ev.User)
 	}

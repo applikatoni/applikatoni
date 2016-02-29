@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"net/url"
@@ -20,7 +21,7 @@ const flowdockTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deployed{{e
 
 var flowdockTemplate = template.Must(template.New("flowdockSummary").Parse(flowdockTmplStr))
 
-func NotifyFlowdock(ev *DeploymentEvent) {
+func NotifyFlowdock(db *sql.DB, ev *DeploymentEvent) {
 	if ev.Target.FlowdockEndpoint == "" {
 		return
 	}

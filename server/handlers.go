@@ -250,7 +250,9 @@ func createDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	eventHub.Publish(deployment.State, deployment)
 	killChan := killRegistry.Add(deployment.Id)
+
 	deploymentConfig := models.NewDeploymentConfig(deployment, target, stages)
 	manager, err := deploy.NewManager(deploymentConfig, logRouter, killChan)
 	if err != nil {
@@ -268,6 +270,7 @@ func createDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	eventHub.Publish(models.DEPLOYMENT_ACTIVE, deployment)
 
 	go func() {
 		newState := models.DEPLOYMENT_SUCCESSFUL
@@ -279,6 +282,8 @@ func createDeploymentHandler(w http.ResponseWriter, r *http.Request) {
 		err = updateDeploymentState(db, deployment, newState)
 		if err != nil {
 			log.Println("Could not update deployment state")
+		} else {
+			eventHub.Publish(newState, deployment)
 		}
 
 		killRegistry.Remove(deployment.Id)

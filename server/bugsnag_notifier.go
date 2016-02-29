@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"log"
 	"net/http"
 	"net/url"
@@ -12,7 +13,7 @@ const (
 	bugsnagNotifyEndpoint = "https://notify.bugsnag.com/deploy"
 )
 
-func NotifyBugsnag(ev *DeploymentEvent) {
+func NotifyBugsnag(db *sql.DB, ev *DeploymentEvent) {
 	if ev.Target.BugsnagApiKey != "" {
 		SendBugsnagRequest(bugsnagNotifyEndpoint, ev.Deployment, ev.Target, ev.Application)
 	}
