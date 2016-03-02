@@ -30,6 +30,7 @@ func TestNotifySlack(t *testing.T) {
 	}
 
 	event := &DeploymentEvent{
+		State:       models.DEPLOYMENT_SUCCESSFUL,
 		Deployment:  deployment,
 		Application: application,
 		Target:      target,

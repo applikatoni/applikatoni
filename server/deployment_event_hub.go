@@ -8,6 +8,7 @@ import (
 )
 
 type DeploymentEvent struct {
+	State       models.DeploymentState
 	Deployment  *models.Deployment
 	Application *models.Application
 	Target      *models.Target
@@ -47,7 +48,7 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 		return
 	}
 
-	event, err := hub.buildDeploymentEvent(d)
+	event, err := hub.buildDeploymentEvent(state, d)
 	if err != nil {
 		log.Printf("Building deployment for deployment %d failed: %s\n", d.Id,
 			err)
@@ -59,7 +60,7 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 	}
 }
 
-func (hub *DeploymentEventHub) buildDeploymentEvent(d *models.Deployment) (*DeploymentEvent, error) {
+func (hub *DeploymentEventHub) buildDeploymentEvent(s models.DeploymentState, d *models.Deployment) (*DeploymentEvent, error) {
 	user, err := getUser(hub.db, d.UserId)
 	if err != nil {
 		return nil, err
@@ -77,6 +78,7 @@ func (hub *DeploymentEventHub) buildDeploymentEvent(d *models.Deployment) (*Depl
 	}
 
 	event := &DeploymentEvent{
+		State:       s,
 		Deployment:  d,
 		Application: application,
 		Target:      target,

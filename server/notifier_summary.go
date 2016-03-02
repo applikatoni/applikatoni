@@ -17,7 +17,7 @@ func generateSummary(t *template.Template, ev *DeploymentEvent) (string, error) 
 	}
 
 	var success bool
-	if ev.Deployment.State == models.DEPLOYMENT_SUCCESSFUL {
+	if ev.State == models.DEPLOYMENT_SUCCESSFUL {
 		success = true
 	} else {
 		success = false

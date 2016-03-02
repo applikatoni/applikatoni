@@ -39,6 +39,10 @@ func TestPublish(t *testing.T) {
 
 	testDone := make(chan struct{})
 	testSubscriber := func(ev *DeploymentEvent) {
+		if ev.State != models.DEPLOYMENT_NEW {
+			t.Errorf("deployment event has wrong state")
+		}
+
 		if ev.User.Id != user.Id {
 			t.Errorf("deployment event has wrong user")
 		}

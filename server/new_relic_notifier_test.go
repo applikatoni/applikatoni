@@ -26,6 +26,7 @@ func TestSendNewRelicRequest(t *testing.T) {
 	}
 
 	deployment := &models.Deployment{
+		State:           models.DEPLOYMENT_SUCCESSFUL,
 		Id:              999,
 		ApplicationName: "web",
 		TargetName:      target.Name,
@@ -35,6 +36,7 @@ func TestSendNewRelicRequest(t *testing.T) {
 	}
 
 	event := &DeploymentEvent{
+		State:       models.DEPLOYMENT_SUCCESSFUL,
 		Deployment:  deployment,
 		Application: application,
 		Target:      target,
