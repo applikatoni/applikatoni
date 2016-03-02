@@ -14,7 +14,7 @@ type DeploymentEvent struct {
 	User        *models.User
 }
 
-type Subscriber func(*sql.DB, *DeploymentEvent)
+type Subscriber func(*DeploymentEvent)
 
 type DeploymentEventHub struct {
 	db          *sql.DB
@@ -55,7 +55,7 @@ func (hub *DeploymentEventHub) Publish(state models.DeploymentState, d *models.D
 	}
 
 	for _, subscriber := range subscribers {
-		go subscriber(hub.db, event)
+		go subscriber(event)
 	}
 }
 

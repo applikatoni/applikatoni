@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"database/sql"
 	"encoding/json"
 
 	"log"
@@ -23,7 +22,7 @@ type slackMsg struct {
 	Text string `json:"text"`
 }
 
-func NotifySlack(db *sql.DB, ev *DeploymentEvent) {
+func NotifySlack(ev *DeploymentEvent) {
 	if ev.Target.SlackUrl == "" {
 		return
 	}

@@ -8,7 +8,7 @@ import (
 )
 
 func TestSubscribe(t *testing.T) {
-	testSubscriber := func(db *sql.DB, ev *DeploymentEvent) {}
+	testSubscriber := func(ev *DeploymentEvent) {}
 
 	hub := NewDeploymentEventHub(&sql.DB{})
 	hub.Subscribe([]models.DeploymentState{models.DEPLOYMENT_NEW}, testSubscriber)
@@ -38,7 +38,7 @@ func TestPublish(t *testing.T) {
 	config = &Configuration{Applications: []*models.Application{application}}
 
 	testDone := make(chan struct{})
-	testSubscriber := func(db *sql.DB, ev *DeploymentEvent) {
+	testSubscriber := func(ev *DeploymentEvent) {
 		if ev.User.Id != user.Id {
 			t.Errorf("deployment event has wrong user")
 		}
