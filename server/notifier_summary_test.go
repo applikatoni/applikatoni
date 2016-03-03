@@ -3,7 +3,6 @@ package main
 import (
 	"testing"
 
-	"github.com/applikatoni/applikatoni/deploy"
 	"github.com/applikatoni/applikatoni/models"
 )
 
@@ -32,6 +31,13 @@ func TestGenerateSummary(t *testing.T) {
 		SSLEnabled: true,
 	}
 
+	event := &DeploymentEvent{
+		Deployment:  deployment,
+		Application: application,
+		Target:      target,
+		User:        user,
+	}
+
 	expectedSuccessMsg := `main-web-app Successfully Deployed:
 Foo Bar deployed master on staging :pizza:
 
@@ -46,8 +52,8 @@ Foo Bar deployed master on staging :pizza:
 <https://github.com/shipping-co/main-web-app/commit/f00b4r|View latest commit on GitHub>
 <https://example.com/main-web-app/deployments/0|Open deployment in Applikatoni>`
 
-	entry := deploy.LogEntry{EntryType: deploy.DEPLOYMENT_SUCCESS}
-	actualSuccessMsg, err := generateSummary(slackTemplate, entry, application, deployment, user)
+	event.State = models.DEPLOYMENT_SUCCESSFUL
+	actualSuccessMsg, err := generateSummary(slackTemplate, event)
 	if err != nil {
 		t.Errorf("generateSummary returned err: %s\n", err)
 	}
@@ -56,8 +62,8 @@ Foo Bar deployed master on staging :pizza:
 		t.Errorf("sent wrong message expected=%v got=%v", expectedSuccessMsg, actualSuccessMsg)
 	}
 
-	entry = deploy.LogEntry{EntryType: deploy.DEPLOYMENT_FAIL}
-	actualFailMsg, err := generateSummary(slackTemplate, entry, application, deployment, user)
+	event.State = models.DEPLOYMENT_FAILED
+	actualFailMsg, err := generateSummary(slackTemplate, event)
 	if err != nil {
 		t.Errorf("generateSummary returned err: %s\n", err)
 	}

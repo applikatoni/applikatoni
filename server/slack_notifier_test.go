@@ -19,10 +19,22 @@ func TestNotifySlack(t *testing.T) {
 	}
 
 	deployment := &models.Deployment{
+		State:           models.DEPLOYMENT_SUCCESSFUL,
 		ApplicationName: "web",
 		TargetName:      target.Name,
 		Branch:          "master",
 		CommitSha:       "f00b4r",
+	}
+	user := &models.User{
+		Name: "Foo Bar",
+	}
+
+	event := &DeploymentEvent{
+		State:       models.DEPLOYMENT_SUCCESSFUL,
+		Deployment:  deployment,
+		Application: application,
+		Target:      target,
+		User:        user,
 	}
 
 	expectedMessage := slackMsg{
@@ -43,5 +55,5 @@ func TestNotifySlack(t *testing.T) {
 
 	target.SlackUrl = ts.URL
 
-	SendSlackRequest(deployment, target, application, "test summary")
+	SendSlackRequest(event, "test summary")
 }

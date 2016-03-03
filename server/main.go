@@ -14,6 +14,7 @@ import (
 	"golang.org/x/oauth2/github"
 
 	"github.com/applikatoni/applikatoni/deploy"
+	"github.com/applikatoni/applikatoni/models"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -66,6 +67,7 @@ var (
 	templates    map[string]*template.Template
 	oauthCfg     *oauth2.Config
 	killRegistry *KillRegistry
+	eventHub     *DeploymentEventHub
 )
 
 var (
@@ -147,28 +149,27 @@ func main() {
 	logRouter.SubscribeAll(newLogEntrySaver(db))
 	// Setup the Webhook notification
 	logRouter.SubscribeAll(newWebHookNotifier(db))
-	// Setup the bugsnag deployment tracking
-	bugsnag := NewDeploymentListener(db, NotifyBugsnag, []deploy.LogEntryType{
-		deploy.DEPLOYMENT_SUCCESS,
-	})
-	logRouter.SubscribeAll(bugsnag)
-	// Setup the new relic deployment notifcation
-	newRelic := NewDeploymentListener(db, NotifyNewRelic, []deploy.LogEntryType{
-		deploy.DEPLOYMENT_SUCCESS,
-	})
-	logRouter.SubscribeAll(newRelic)
-	// Setup the flowdock deployment notifcation
-	flowdock := NewDeploymentListener(db, NotifyFlowdock, []deploy.LogEntryType{
-		deploy.DEPLOYMENT_FAIL,
-		deploy.DEPLOYMENT_SUCCESS,
-	})
-	logRouter.SubscribeAll(flowdock)
-	// Setup the Slack deployment notifcation
-	slack := NewDeploymentListener(db, NotifySlack, []deploy.LogEntryType{
-		deploy.DEPLOYMENT_FAIL,
-		deploy.DEPLOYMENT_SUCCESS,
-	})
-	logRouter.SubscribeAll(slack)
+
+	// Initialize global DeploymentEventHub
+	eventHub = NewDeploymentEventHub(db)
+	// Subscribe the Bugsnag notifier
+	bugsnagStates := []models.DeploymentState{models.DEPLOYMENT_SUCCESSFUL}
+	eventHub.Subscribe(bugsnagStates, NotifyBugsnag)
+	// Subscribe the NewRelic notifier
+	newRelicStates := []models.DeploymentState{models.DEPLOYMENT_SUCCESSFUL}
+	eventHub.Subscribe(newRelicStates, NotifyNewRelic)
+	// Subscribe the Flowdock notifier
+	flowdockStates := []models.DeploymentState{
+		models.DEPLOYMENT_SUCCESSFUL,
+		models.DEPLOYMENT_FAILED,
+	}
+	eventHub.Subscribe(flowdockStates, NotifyFlowdock)
+	// Subscribe the Slack notifier
+	slackStates := []models.DeploymentState{
+		models.DEPLOYMENT_SUCCESSFUL,
+		models.DEPLOYMENT_FAILED,
+	}
+	eventHub.Subscribe(slackStates, NotifySlack)
 
 	// Setup the router and the routes
 	r := mux.NewRouter()
