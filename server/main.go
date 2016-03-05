@@ -71,6 +71,7 @@ var (
 )
 
 var (
+	dbBusyTimeout  = "30000"
 	sessionName    = "applikatonisession"
 	templatesFiles = [][]string{
 		{"layout.tmpl", "hogan_templates.tmpl", "partials.tmpl", "home.tmpl"},
@@ -100,7 +101,9 @@ func main() {
 		log.Fatal("Parsing templates failed", err)
 	}
 
-	db, err = sql.Open("sqlite3", *databasePath)
+	dbPath := fmt.Sprintf("%s?cache=shared&_busy_timeout=%s",
+		*databasePath, dbBusyTimeout)
+	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
 		log.Fatal("could not open sqlite3 database file", err)
 	}
