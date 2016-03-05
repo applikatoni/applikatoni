@@ -64,5 +64,11 @@ func TestRender(t *testing.T) {
 				t.Errorf("Rendering wrong. expected='%s', got='%s'", expectedScript, result[stage])
 			}
 		}
+
+		for name, _ := range otherOptions {
+			if role.Options[name] != "" {
+				t.Errorf("role.Options[%s] to be nil, got=%s", name, role.Options[name])
+			}
+		}
 	}
 }

@@ -13,7 +13,7 @@ type Role struct {
 
 func (r *Role) RenderScripts(options map[string]string) (map[DeploymentStage]string, error) {
 	rendered := make(map[DeploymentStage]string)
-	mergedOptions := mergeOptions(r.Options, options)
+	mergedOptions := mergeOptions(copyOptions(r.Options), options)
 
 	for stage, scriptTemplate := range r.ScriptTemplates {
 		var b bytes.Buffer
@@ -39,4 +39,12 @@ func mergeOptions(o1 map[string]string, o2 map[string]string) map[string]string 
 		o1[key] = value
 	}
 	return o1
+}
+
+func copyOptions(options map[string]string) map[string]string {
+	result := make(map[string]string)
+	for key, value := range options {
+		result[key] = value
+	}
+	return result
 }
