@@ -150,8 +150,6 @@ func main() {
 	logRouter.SubscribeAll(deploy.ConsoleLogger)
 	// Setup the listener that persists all log entries
 	logRouter.SubscribeAll(newLogEntrySaver(db))
-	// Setup the Webhook notification
-	logRouter.SubscribeAll(newWebHookNotifier(db))
 
 	// Initialize global DeploymentEventHub
 	eventHub = NewDeploymentEventHub(db)
@@ -173,6 +171,14 @@ func main() {
 		models.DEPLOYMENT_FAILED,
 	}
 	eventHub.Subscribe(slackStates, NotifySlack)
+	// Subscribe the webhooks
+	webhookStates := []models.DeploymentState{
+		models.DEPLOYMENT_NEW,
+		models.DEPLOYMENT_ACTIVE,
+		models.DEPLOYMENT_SUCCESSFUL,
+		models.DEPLOYMENT_FAILED,
+	}
+	eventHub.Subscribe(webhookStates, NotifyWebhooks)
 
 	// Setup the router and the routes
 	r := mux.NewRouter()
