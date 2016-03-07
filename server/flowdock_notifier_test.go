@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -40,4 +42,41 @@ func TestSendFlowdockRequest(t *testing.T) {
 	defer ts.Close()
 
 	SendFlowdockRequest(ts.URL, deployment, summary)
+}
+
+func TestFlowdockSummary(t *testing.T) {
+	var summary bytes.Buffer
+
+	comment := `* First fix
+* Second fix
+* Third fix`
+
+	err := flowdockTemplate.Execute(&summary, map[string]interface{}{
+		"GitHubRepo":    "web-app",
+		"Success":       true,
+		"Branch":        "master",
+		"Target":        "production",
+		"Username":      "mrnugget",
+		"Comment":       comment,
+		"CommentLines":  strings.Split(comment, "\n"),
+		"GitHubUrl":     "https://github.com/shipping-co/web-app",
+		"DeploymentURL": "http://localhost:8080/web-app/deployments/1",
+	})
+	if err != nil {
+		t.Errorf("Executing template failed: %s", err)
+	}
+
+	summaryStr := summary.String()
+
+	if !strings.Contains(summaryStr, "> * First fix\n") {
+		t.Errorf("Comment line not indented. got=%q", summaryStr)
+	}
+
+	if !strings.Contains(summaryStr, "> * Second fix\n") {
+		t.Errorf("Comment line not indented. got=%q", summaryStr)
+	}
+
+	if !strings.Contains(summaryStr, "> * Third fix") {
+		t.Errorf("Comment line not indented. got=%q", summaryStr)
+	}
 }

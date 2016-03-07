@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 	"text/template"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -38,6 +39,7 @@ func generateSummary(t *template.Template, ev *DeploymentEvent) (string, error) 
 		"Target":        ev.Deployment.TargetName,
 		"Username":      ev.User.Name,
 		"Comment":       ev.Deployment.Comment,
+		"CommentLines":  strings.Split(ev.Deployment.Comment, "\n"),
 		"GitHubUrl":     gitHubUrl,
 		"DeploymentURL": deploymentUrl,
 	})

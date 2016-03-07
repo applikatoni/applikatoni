@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+* Fix the indentation of multi-line deployment comments in Flowdock summary (mrnugget)
 * **BREAKING CHANGE**: fix unstable webhooks and "database is locked" errors by
   reducing the amount of webhook triggers. Webhooks now only receive a maximum
   of 3 requests per deployment, corresponding to the state changes of a

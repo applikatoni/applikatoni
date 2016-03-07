@@ -12,7 +12,9 @@ import (
 const flowdockTmplStr = `{{.GitHubRepo}} {{if .Success}}Successfully Deployed{{else}}Deploy Failed{{end}}:
 **{{.Username}}** deployed **{{.Branch}}** on **{{.Target}}** :pizza:
 
-> {{.Comment}}
+{{range $idx, $line := .CommentLines}}
+> {{$line}}
+{{end}}
 
 [View latest commit on GitHub]({{.GitHubUrl}})
 [Open deployment in Applikatoni]({{.DeploymentURL}})
