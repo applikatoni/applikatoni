@@ -71,9 +71,7 @@ func createDeployment(db *sql.DB, d *models.Deployment) error {
 	d.State = state
 	d.CreatedAt = createdAt
 
-	tx.Commit()
-
-	return nil
+	return tx.Commit()
 }
 
 func updateDeploymentState(db *sql.DB, d *models.Deployment, state models.DeploymentState) error {

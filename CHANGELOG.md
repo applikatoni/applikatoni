@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+* **BREAKING CHANGE**: fix unstable webhooks and "database is locked" errors by
+  reducing the amount of webhook triggers. Webhooks now only receive a maximum
+  of 3 requests per deployment, corresponding to the state changes of a
+  deployment. See [these constants](https://github.com/applikatoni/applikatoni/blob/15d2e6b9f7c4f581ca6619e8e3015a53b541ed9a/models/deployment.go#L8-L11)
+  for possible states. See [these structs](https://github.com/applikatoni/applikatoni/blob/9eeb547d140f8dcc0358b1e6f98fd36bdfe23fd6/server/webhook_notifier.go#L14-L50)
+  for the new schema of a webhook payload. Webhooks are now _only_ URLs and which
+  webhook receives a request on which payload cannot be configured anymore. See
+  [Issue #35](https://github.com/applikatoni/applikatoni/issues/35) for more
+  information on the topic. (PR 36, mrnugget)
+
 ## 1.3.0 - 18. January 2016
 
 * Fix nil-pointer dereference in notifiers when `err` is set and
