@@ -8,6 +8,8 @@ import (
 	"net/http"
 )
 
+const mandrillMessagesEndpoint = "https://mandrillapp.com/api/1.0/messages/send.json"
+
 type MandrillMessage struct {
 	Html      string             `json:"html"`
 	Text      string             `json:"text"`

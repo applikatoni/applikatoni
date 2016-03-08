@@ -17,7 +17,6 @@ const (
 	digestSleepTime            = 1 * time.Minute
 	digestHourOfDay            = 22
 	digestInterval             = 24 * time.Hour
-	mandrillMessagesEndpoint   = "https://mandrillapp.com/api/1.0/messages/send.json"
 	digestTimezone             = "Europe/Berlin"
 	digestSubjectFmt           = " 🍕 Applikatoni Daily Digest - %s"
 	digestFromName             = "Applikatoni"
