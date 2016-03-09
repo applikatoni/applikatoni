@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add [Mailgun](https://mailgun.com) support for daily digest emails. Users can
+  now choose between Mailgun and Mandrill. Mailgun has priority in the
+  configuration. (PR 37, mrnugget)
 * Fix the indentation of multi-line deployment comments in Flowdock summary (mrnugget)
 * **BREAKING CHANGE**: fix unstable webhooks and "database is locked" errors by
   reducing the amount of webhook triggers. Webhooks now only receive a maximum
