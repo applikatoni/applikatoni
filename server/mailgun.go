@@ -9,14 +9,14 @@ import (
 
 type MailgunClient struct {
 	*http.Client
-	baseUrl string
+	baseURL string
 	apiKey  string
 }
 
-func NewMailgunClient(baseUrl, apiKey string) *MailgunClient {
+func NewMailgunClient(baseURL, apiKey string) *MailgunClient {
 	return &MailgunClient{
 		Client:  &http.Client{},
-		baseUrl: baseUrl,
+		baseURL: baseURL,
 		apiKey:  apiKey,
 	}
 }
@@ -31,7 +31,7 @@ func (m *MailgunClient) SendDigest(digest *DailyDigest) error {
 	}
 
 	requestBody := strings.NewReader(params.Encode())
-	requestUrl := fmt.Sprintf("%s/messages", m.baseUrl)
+	requestUrl := fmt.Sprintf("%s/messages", m.baseURL)
 
 	req, err := http.NewRequest("POST", requestUrl, requestBody)
 	if err != nil {

@@ -15,6 +15,8 @@ type Configuration struct {
 	GitHubClientId     string                `json:"github_client_id"`
 	GitHubClientSecret string                `json:"github_client_secret"`
 	MandrillAPIKey     string                `json:"mandrill_api_key"`
+	MailgunBaseURL     string                `json:"mailgun_base_url"`
+	MailgunAPIKey      string                `json:"mailgun_api_key"`
 	Applications       []*models.Application `json:"applications"`
 }
 
