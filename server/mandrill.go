@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"net/http"
 )
 
@@ -47,6 +47,25 @@ func NewMandrillClient(endpoint, apiKey string) *MandrillClient {
 }
 
 func (m *MandrillClient) SendDigest(digest *DailyDigest) error {
+	requestBody, err := m.newRequestBody(digest)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", m.endpoint, requestBody)
+	if err != nil {
+		return err
+	}
+
+	resp, err := m.Do(req)
+	if err != nil {
+		return err
+	}
+
+	return m.checkResponseStatus(resp)
+}
+
+func (m *MandrillClient) newRequestBody(digest *DailyDigest) (io.Reader, error) {
 	to := []MandrillReceiver{}
 	for _, email := range digest.Receivers {
 		to = append(to, MandrillReceiver{email})
@@ -65,31 +84,28 @@ func (m *MandrillClient) SendDigest(digest *DailyDigest) error {
 
 	data, err := json.Marshal(payload)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	req, err := http.NewRequest("POST", m.endpoint, bytes.NewReader(data))
-	if err != nil {
-		return err
-	}
+	return bytes.NewReader(data), nil
+}
 
-	resp, err := m.Do(req)
-	if err != nil {
-		return err
-	}
-	if resp.StatusCode != 200 {
-		return fmt.Errorf("mandrill response code not 200, but %d", resp.StatusCode)
+func (m *MandrillClient) checkResponseStatus(response *http.Response) error {
+	if response.StatusCode != 200 {
+		return fmt.Errorf("mandrill response code is %d", response.StatusCode)
 	}
 
 	responseBody := []MandrillDeliveryStatus{}
-	err = json.NewDecoder(resp.Body).Decode(&responseBody)
+	err := json.NewDecoder(response.Body).Decode(&responseBody)
 	if err != nil {
 		return err
 	}
 
 	for _, delivery := range responseBody {
 		if delivery.Status != "sent" {
-			log.Printf("sending email to %s failed. delivery status: %s", delivery.Email, delivery.Status)
+			err := fmt.Errorf("Sending digest to %s failed. delivery status=%s",
+				delivery.Email, delivery.Status)
+			return err
 		}
 	}
 
