@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestSendDigest(t *testing.T) {
+func TestMailgunSendDigest(t *testing.T) {
 	var digestHtmlBody bytes.Buffer
 	digestHtmlBody.WriteString("<h1>Hello there!")
 

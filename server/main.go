@@ -136,7 +136,10 @@ func main() {
 	killRegistry = NewKillRegistry()
 
 	// Run the daily digest sending in the background
-	go SendDailyDigests(db)
+	digestSender := config.DailyDigestSender()
+	if digestSender != nil {
+		go SendDailyDigests(db, digestSender)
+	}
 
 	// Setup session store
 	sessionStore = sessions.NewCookieStore([]byte(config.SessionSecret))

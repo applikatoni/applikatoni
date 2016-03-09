@@ -32,14 +32,28 @@ type MandrillDeliveryStatus struct {
 	Status string `json:"status"`
 }
 
-func SendDigestMail(digest *DailyDigest) error {
+type MandrillClient struct {
+	*http.Client
+	endpoint string
+	apiKey   string
+}
+
+func NewMandrillClient(endpoint, apiKey string) *MandrillClient {
+	return &MandrillClient{
+		Client:   &http.Client{},
+		endpoint: endpoint,
+		apiKey:   apiKey,
+	}
+}
+
+func (m *MandrillClient) SendDigest(digest *DailyDigest) error {
 	to := []MandrillReceiver{}
 	for _, email := range digest.Receivers {
 		to = append(to, MandrillReceiver{email})
 	}
 
 	payload := &MandrillMessagePayload{}
-	payload.Key = config.MandrillAPIKey
+	payload.Key = m.apiKey
 	payload.Message = MandrillMessage{
 		Html:      digest.HtmlBody.String(),
 		Text:      digest.TextBody.String(),
@@ -54,14 +68,12 @@ func SendDigestMail(digest *DailyDigest) error {
 		return err
 	}
 
-	client := &http.Client{}
-
-	req, err := http.NewRequest("POST", mandrillMessagesEndpoint, bytes.NewReader(data))
+	req, err := http.NewRequest("POST", m.endpoint, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
 
-	resp, err := client.Do(req)
+	resp, err := m.Do(req)
 	if err != nil {
 		return err
 	}

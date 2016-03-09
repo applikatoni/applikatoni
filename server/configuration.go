@@ -20,6 +20,16 @@ type Configuration struct {
 	Applications       []*models.Application `json:"applications"`
 }
 
+func (c *Configuration) DailyDigestSender() DailyDigestSender {
+	if c.MailgunBaseURL != "" && c.MailgunAPIKey != "" {
+		return NewMailgunClient(c.MailgunBaseURL, c.MailgunAPIKey)
+	} else if c.MandrillAPIKey != "" {
+		return NewMandrillClient(mandrillMessagesEndpoint, c.MandrillAPIKey)
+	} else {
+		return nil
+	}
+}
+
 func readConfiguration(path string) (*Configuration, error) {
 	var config Configuration
 
