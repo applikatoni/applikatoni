@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -9,39 +10,28 @@ import (
 
 type MailgunClient struct {
 	*http.Client
-	baseURL string
-	apiKey  string
+	requestURL string
+	apiKey     string
 }
 
 func NewMailgunClient(baseURL, apiKey string) *MailgunClient {
+	requestURL := fmt.Sprintf("%s/messages", baseURL)
+
 	return &MailgunClient{
-		Client:  &http.Client{},
-		baseURL: baseURL,
-		apiKey:  apiKey,
+		Client:     &http.Client{},
+		requestURL: requestURL,
+		apiKey:     apiKey,
 	}
 }
 
 func (m *MailgunClient) SendDigest(digest *DailyDigest) error {
-	params := url.Values{
-		"from":    {fmt.Sprintf("%s <%s>", digestFromName, digestFromEmail)},
-		"to":      {strings.Join(digest.Receivers, ",")},
-		"subject": {digest.Subject},
-		"text":    {digest.TextBody.String()},
-		"html":    {digest.HtmlBody.String()},
-	}
-
-	requestBody := strings.NewReader(params.Encode())
-	requestUrl := fmt.Sprintf("%s/messages", m.baseURL)
-
-	req, err := http.NewRequest("POST", requestUrl, requestBody)
+	requestBody := m.newRequestBody(digest)
+	request, err := m.newRequest(requestBody)
 	if err != nil {
 		return err
 	}
 
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	req.SetBasicAuth("api", m.apiKey)
-
-	resp, err := m.Do(req)
+	resp, err := m.Do(request)
 	if err != nil {
 		return err
 	}
@@ -51,4 +41,28 @@ func (m *MailgunClient) SendDigest(digest *DailyDigest) error {
 	}
 
 	return nil
+}
+
+func (m *MailgunClient) newRequestBody(digest *DailyDigest) io.Reader {
+	params := url.Values{
+		"from":    {fmt.Sprintf("%s <%s>", digestFromName, digestFromEmail)},
+		"to":      {strings.Join(digest.Receivers, ",")},
+		"subject": {digest.Subject},
+		"text":    {digest.TextBody.String()},
+		"html":    {digest.HtmlBody.String()},
+	}
+
+	return strings.NewReader(params.Encode())
+}
+
+func (m *MailgunClient) newRequest(body io.Reader) (*http.Request, error) {
+	req, err := http.NewRequest("POST", m.requestURL, body)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth("api", m.apiKey)
+
+	return req, nil
 }
