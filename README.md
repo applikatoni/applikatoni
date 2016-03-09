@@ -252,6 +252,8 @@ Unicorn webserver and Sidekiq as a background worker process.
   "github_client_id": "<CLIENT_ID>",
   "github_client_secret": "<CLIENT_SECRET>",
   "mandrill_api_key": "<API_KEY>",
+  "mailgun_base_url": "<MAILGUN_BASE_URL>",
+  "mailgun_api_key": "<API_KEY>",
   "applications": [
     {
       "name": "our-main-application",
@@ -349,9 +351,8 @@ Unicorn webserver and Sidekiq as a background worker process.
   Applikatoni instance is the one specified at GitHub.
 * `github_client_id` - The client ID from your GitHub OAuth2 application.
 * `github_client_secret` - The client secret from your GitHub OAuth2 application.
-* `mandrill_api_key` - The API key of your [Mandrill](https://mandrillapp.com/)
-  account. This is needed to send daily digest emails. If this is blank or left
-out, no daily digest email will be sent.
+* `mandrill_api_key` - The API key of your [Mandrill](https://mandrillapp.com/) account. Optional, but this is needed to send daily digest emails. If this is blank or left out, no daily digest email will be sent.
+* `mailgun_base_url` and `mailgun_api_key` - The base URL and API key of your [Mailgun](https://mailgun.com/) account. Optional, but this is needed to send daily digest emails. If this is blank or left out, the configuration is checked for Mandrill credentials, if none are found, no daily digest email will be sent.
 * `applications` - An array of application configurations that Applikatoni can deploy.
 
 ### Application Properties
@@ -364,7 +365,7 @@ Inside the `applications` array applications need to be configured.
 * `github_repo` - The name of the GitHub repository. It's the `rails-app` in `github.com/company/rails-app`.
 * `github_branches` - An array of branch names. These branches will show up with their current status on the application page in Applikatoni to easily deploy them with a click.
 * `travis_image_url` - The URL to the [Travis CI status image](http://docs.travis-ci.com/user/status-images/), including the token.
-* `daily_digest_receivers` - An array of email addresses to which the daily digest should be sent (if `mandrill_api_key` is not set, no daily digest will be sent).
+* `daily_digest_receivers` - An array of email addresses to which the daily digest should be sent (if `mandrill_api_key` or `mailgun_base_url` and `mailgun_api_key` are not set, no daily digest will be sent).
 * `daily_digest_target` - The name of the `target` for which the daily digest should be sent. For example: if you have `test`, `staging` and `production` targets, it makes sense to only send out daily digest emails for `production`.
 
 ### Target Properties
