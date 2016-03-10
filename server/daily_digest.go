@@ -52,7 +52,11 @@ type DailyDigest struct {
 	HtmlBody  bytes.Buffer
 }
 
-func SendDailyDigests(db *sql.DB) {
+type DailyDigestSender interface {
+	SendDigest(*DailyDigest) error
+}
+
+func SendDailyDigests(db *sql.DB, sender DailyDigestSender) {
 	nextDailyDigest = calcInitialDailyDigest(digestHourOfDay)
 
 	for {
@@ -62,7 +66,7 @@ func SendDailyDigests(db *sql.DB) {
 			log.Println("Sending daily digests...")
 
 			for _, app := range config.Applications {
-				err := sendApplicationDigest(db, app)
+				err := sendApplicationDigest(db, sender, app)
 				if err != nil {
 					log.Printf("Sending digest for application %s failed: %s", app.Name, err)
 				}
@@ -75,7 +79,7 @@ func SendDailyDigests(db *sql.DB) {
 	}
 }
 
-func sendApplicationDigest(db *sql.DB, a *models.Application) error {
+func sendApplicationDigest(db *sql.DB, sender DailyDigestSender, a *models.Application) error {
 	targetName := a.DailyDigestTarget
 	receivers := a.DailyDigestReceivers
 	since := time.Now().Add(-1 * digestInterval)
@@ -112,7 +116,7 @@ func sendApplicationDigest(db *sql.DB, a *models.Application) error {
 		return err
 	}
 
-	err = SendDigestMail(digest)
+	err = sender.SendDigest(digest)
 	if err != nil {
 		log.Printf("sending digest for %s to %s failed: %s\n", a.Name, receivers, err)
 		return err
