@@ -174,6 +174,16 @@ func main() {
 		models.DEPLOYMENT_FAILED,
 	}
 	eventHub.Subscribe(slackStates, NotifySlack)
+	// Subscribe the GitHub notifier to use the Deployments API
+	githubNotifier := NewGitHubNotifier()
+	githubStates := []models.DeploymentState{
+		models.DEPLOYMENT_NEW,
+		models.DEPLOYMENT_ACTIVE,
+		models.DEPLOYMENT_SUCCESSFUL,
+		models.DEPLOYMENT_FAILED,
+	}
+	eventHub.Subscribe(githubStates, githubNotifier.Notify)
+
 	// Subscribe the webhooks
 	webhookStates := []models.DeploymentState{
 		models.DEPLOYMENT_NEW,

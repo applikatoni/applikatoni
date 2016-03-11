@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -148,6 +149,86 @@ func (gc *GitHubClient) UpdateUser(u *models.User) error {
 
 	err := gc.GetDecode(url, u)
 	return err
+}
+
+type GitHubDeployment struct {
+	Id          int64  `json:"id"`
+	Sha         string `json:"sha"`
+	Environment string `json:"environment"`
+	StatusesURL string `json:"statuses_url"`
+}
+
+func (gc *GitHubClient) CreateDeployment(a *models.Application, d *models.Deployment) (*GitHubDeployment, error) {
+	url := fmt.Sprintf("%s/repos/%s/%s/deployments",
+		gitHubAPI, a.GitHubOwner, a.GitHubRepo)
+
+	createDeploymentPayload := struct {
+		AutoMerge   bool   `json:"auto_merge"`
+		Ref         string `json:"ref"`
+		Environment string `json:"environment"`
+		Description string `json:"description"`
+	}{
+		AutoMerge:   false,
+		Ref:         d.CommitSha,
+		Environment: d.TargetName,
+		Description: d.Comment,
+	}
+
+	jsonPayload, err := json.Marshal(createDeploymentPayload)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := gc.Post(url, "application/json", bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != 201 {
+		err := fmt.Errorf("GitHub responded with %d instead of 201", resp.StatusCode)
+		return nil, err
+	}
+
+	githubDeployment := &GitHubDeployment{}
+
+	defer resp.Body.Close()
+	err = json.NewDecoder(resp.Body).Decode(githubDeployment)
+	if err != nil {
+		return nil, err
+	}
+	return githubDeployment, nil
+}
+
+func (gc *GitHubClient) CreateDeploymentStatus(d *GitHubDeployment, state models.DeploymentState) error {
+	createDeploymentStatusPayload := struct {
+		State string `json:"state"`
+	}{}
+
+	switch state {
+	case models.DEPLOYMENT_ACTIVE:
+		createDeploymentStatusPayload.State = "pending"
+	case models.DEPLOYMENT_SUCCESSFUL:
+		createDeploymentStatusPayload.State = "success"
+	case models.DEPLOYMENT_FAILED:
+		createDeploymentStatusPayload.State = "failure"
+	}
+
+	jsonPayload, err := json.Marshal(createDeploymentStatusPayload)
+	if err != nil {
+		return err
+	}
+
+	resp, err := gc.Post(d.StatusesURL, "application/json", bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != 201 {
+		err := fmt.Errorf("GitHub responded with %d instead of 201", resp.StatusCode)
+		return err
+	}
+
+	return nil
 }
 
 func (gc *GitHubClient) GetDecode(url string, v interface{}) error {
