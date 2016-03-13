@@ -58,6 +58,13 @@ type GitHubDiff struct {
 	Commits          []GitHubCommit `json:"commits"`
 }
 
+type GitHubDeployment struct {
+	Id          int64  `json:"id"`
+	Sha         string `json:"sha"`
+	Environment string `json:"environment"`
+	StatusesURL string `json:"statuses_url"`
+}
+
 type GitHubClient struct{ *http.Client }
 
 func NewGitHubClient(u *models.User) *GitHubClient {
@@ -149,13 +156,6 @@ func (gc *GitHubClient) UpdateUser(u *models.User) error {
 
 	err := gc.GetDecode(url, u)
 	return err
-}
-
-type GitHubDeployment struct {
-	Id          int64  `json:"id"`
-	Sha         string `json:"sha"`
-	Environment string `json:"environment"`
-	StatusesURL string `json:"statuses_url"`
 }
 
 func (gc *GitHubClient) CreateDeployment(a *models.Application, d *models.Deployment) (*GitHubDeployment, error) {
