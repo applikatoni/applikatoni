@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add support for the GitHub deployments API. Creating a new deployment now
+  also creates a new GitHub deployment and the status is updated accordingly.
+  (mrnugget)
 * Add [Mailgun](https://mailgun.com) support for daily digest emails. Users can
   now choose between Mailgun and Mandrill. Mailgun has priority in the
   configuration. (PR 37, mrnugget)
