@@ -168,15 +168,17 @@ func (gc *GitHubClient) CreateDeployment(a *models.Application, d *models.Deploy
 		gitHubAPI, a.GitHubOwner, a.GitHubRepo)
 
 	createDeploymentPayload := struct {
-		AutoMerge   bool   `json:"auto_merge"`
-		Ref         string `json:"ref"`
-		Environment string `json:"environment"`
-		Description string `json:"description"`
+		AutoMerge        bool     `json:"auto_merge"`
+		Ref              string   `json:"ref"`
+		Environment      string   `json:"environment"`
+		Description      string   `json:"description"`
+		RequiredContexts []string `json:"required_contexts"`
 	}{
-		AutoMerge:   false,
-		Ref:         d.CommitSha,
-		Environment: d.TargetName,
-		Description: d.Comment,
+		AutoMerge:        false,
+		Ref:              d.CommitSha,
+		Environment:      d.TargetName,
+		Description:      d.Comment,
+		RequiredContexts: []string{},
 	}
 
 	jsonPayload, err := json.Marshal(createDeploymentPayload)
