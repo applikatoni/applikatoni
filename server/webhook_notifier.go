@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -54,14 +53,6 @@ func NotifyWebhooks(ev *DeploymentEvent) {
 		return
 	}
 
-	scheme := "http"
-	if config.SSLEnabled {
-		scheme = "https"
-	}
-
-	deploymentUrl := fmt.Sprintf("%s://%s/%v/deployments/%v",
-		scheme, config.Host, ev.Application.GitHubRepo, ev.Deployment.Id)
-
 	msg := WebhookMsg{
 		Timestamp: time.Now(),
 		State:     ev.State,
@@ -77,7 +68,7 @@ func NotifyWebhooks(ev *DeploymentEvent) {
 			State:          ev.Deployment.State,
 			Comment:        ev.Deployment.Comment,
 			CreatedAt:      ev.Deployment.CreatedAt,
-			URL:            deploymentUrl,
+			URL:            ev.DeploymentURL(),
 			DeployerID:     ev.Deployment.UserId,
 			DeployerName:   ev.Deployment.User.Name,
 			DeployerAvatar: ev.Deployment.User.AvatarUrl,

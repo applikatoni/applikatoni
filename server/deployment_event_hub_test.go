@@ -76,3 +76,43 @@ func TestPublish(t *testing.T) {
 
 	<-testDone
 }
+
+func TestDeploymentEventDeploymentURL(t *testing.T) {
+	config = &Configuration{
+		Host:       "example.com",
+		SSLEnabled: true,
+	}
+
+	deployment := &models.Deployment{
+		Id:              999999,
+		UserId:          888888,
+		CommitSha:       "f133742",
+		Branch:          "master",
+		Comment:         "Deploying a hotfix",
+		ApplicationName: "my-web-app",
+		TargetName:      "production",
+	}
+	user := &models.User{
+		Name: "mrnugget",
+		Id:   deployment.UserId,
+	}
+	target := &models.Target{Name: "production"}
+	application := &models.Application{
+		Name:        "my-web-app",
+		GitHubRepo:  "my-web-app",
+		GitHubOwner: "shipping-co",
+	}
+
+	event := &DeploymentEvent{
+		State:       models.DEPLOYMENT_SUCCESSFUL,
+		Deployment:  deployment,
+		Application: application,
+		Target:      target,
+		User:        user,
+	}
+
+	deploymentURL := event.DeploymentURL()
+	if deploymentURL != "https://example.com/my-web-app/deployments/999999" {
+		t.Errorf("DeploymentURL() returned wrong url. got=%q", deploymentURL)
+	}
+}

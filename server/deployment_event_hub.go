@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/applikatoni/applikatoni/models"
@@ -13,6 +14,18 @@ type DeploymentEvent struct {
 	Application *models.Application
 	Target      *models.Target
 	User        *models.User
+}
+
+func (de *DeploymentEvent) DeploymentURL() string {
+	var scheme string
+	if config.SSLEnabled {
+		scheme = "https"
+	} else {
+		scheme = "http"
+	}
+
+	return fmt.Sprintf("%s://%s/%v/deployments/%v", scheme, config.Host,
+		de.Application.GitHubRepo, de.Deployment.Id)
 }
 
 type Subscriber func(*DeploymentEvent)
