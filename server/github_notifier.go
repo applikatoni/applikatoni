@@ -7,9 +7,6 @@ import (
 	"github.com/applikatoni/applikatoni/models"
 )
 
-var githubDeployments map[int]*GitHubDeployment
-var githubDeploymentsMutex *sync.Mutex
-
 type GitHubNotifier struct {
 	deployments map[int]*GitHubDeployment
 	mutex       *sync.Mutex
