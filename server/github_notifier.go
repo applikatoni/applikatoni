@@ -41,10 +41,29 @@ func (notifier *GitHubNotifier) Notify(ev *DeploymentEvent) {
 			log.Printf("No GitHubDeployment for %d found\n", ev.Deployment.Id)
 			return
 		}
-		err := ghClient.CreateDeploymentStatus(githubDeployment, ev.State)
+
+		status := notifier.NewStatus(ev)
+		err := ghClient.CreateDeploymentStatus(githubDeployment.StatusesURL, status)
 		if err != nil {
 			log.Printf("Creating GitHub deployment status failed: %s\n", err)
 			return
 		}
 	}
+}
+
+func (notifier *GitHubNotifier) NewStatus(ev *DeploymentEvent) *GitHubDeploymentStatus {
+	deploymentStatus := &GitHubDeploymentStatus{
+		TargetURL: ev.DeploymentURL(),
+	}
+
+	switch ev.State {
+	case models.DEPLOYMENT_ACTIVE:
+		deploymentStatus.State = "pending"
+	case models.DEPLOYMENT_SUCCESSFUL:
+		deploymentStatus.State = "success"
+	case models.DEPLOYMENT_FAILED:
+		deploymentStatus.State = "failure"
+	}
+
+	return deploymentStatus
 }

@@ -65,6 +65,11 @@ type GitHubDeployment struct {
 	StatusesURL string `json:"statuses_url"`
 }
 
+type GitHubDeploymentStatus struct {
+	State     string `json:"state"`
+	TargetURL string `json:"target_url"`
+}
+
 type GitHubClient struct{ *http.Client }
 
 func NewGitHubClient(u *models.User) *GitHubClient {
@@ -199,26 +204,13 @@ func (gc *GitHubClient) CreateDeployment(a *models.Application, d *models.Deploy
 	return githubDeployment, nil
 }
 
-func (gc *GitHubClient) CreateDeploymentStatus(d *GitHubDeployment, state models.DeploymentState) error {
-	createDeploymentStatusPayload := struct {
-		State string `json:"state"`
-	}{}
-
-	switch state {
-	case models.DEPLOYMENT_ACTIVE:
-		createDeploymentStatusPayload.State = "pending"
-	case models.DEPLOYMENT_SUCCESSFUL:
-		createDeploymentStatusPayload.State = "success"
-	case models.DEPLOYMENT_FAILED:
-		createDeploymentStatusPayload.State = "failure"
-	}
-
-	jsonPayload, err := json.Marshal(createDeploymentStatusPayload)
+func (gc *GitHubClient) CreateDeploymentStatus(statusesURL string, status *GitHubDeploymentStatus) error {
+	jsonPayload, err := json.Marshal(status)
 	if err != nil {
 		return err
 	}
 
-	resp, err := gc.Post(d.StatusesURL, "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := gc.Post(statusesURL, "application/json", bytes.NewBuffer(jsonPayload))
 	if err != nil {
 		return err
 	}
