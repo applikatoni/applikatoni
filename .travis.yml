@@ -1,10 +1,9 @@
 sudo: false
 language: go
 before_script:
-  - go get golang.org/x/tools/cmd/vet
   - go get bitbucket.org/liamstask/goose/cmd/goose
   - cd server && goose -env="test" up && cd ../
-script: go test -v ./... && go vet ./...
+script: go test -v ./...
 go:
   - 1.4
   - 1.5
