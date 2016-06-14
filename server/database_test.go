@@ -579,19 +579,29 @@ func TestCreateDeploymentWithActiveDeployments(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
+	// Create an active deployment
 	deployment := buildDeployment(9999)
-
+	deployment.ApplicationName = "application_one"
 	err := createDeployment(db, deployment)
 	checkErr(t, err)
 
 	err = updateDeploymentState(db, deployment, models.DEPLOYMENT_ACTIVE)
 	checkErr(t, err)
 
+	// Try to create a new deployment for this application
 	newDeployment := buildDeployment(9999)
-
+	newDeployment.ApplicationName = "application_one"
 	err = createDeployment(db, newDeployment)
 	if err != ErrDeployInProgress {
 		t.Errorf("createDeployment didnt fail with correct error: %s", err)
+	}
+
+	// Try to create a new deployment for another application
+	newDeployment = buildDeployment(9999)
+	newDeployment.ApplicationName = "application_two"
+	err = createDeployment(db, newDeployment)
+	if err != nil {
+		t.Errorf("createDeployment failed error: %s", err)
 	}
 }
 

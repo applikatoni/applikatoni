@@ -29,7 +29,7 @@ const (
 	userInsertStmt                     = `INSERT INTO users(id, name, access_token, avatar_url, api_token) VALUES(?, ?, ?, ?, ?);`
 	userStmt                           = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE id = ?;`
 	userApiTokenStmt                   = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE api_token = ?;`
-	activeDeploymentsStmt              = `SELECT state FROM deployments WHERE target_name = ? AND state = 'active' LIMIT 1;`
+	activeDeploymentsStmt              = `SELECT state FROM deployments WHERE application_name = ? AND target_name = ? AND state = 'active' LIMIT 1;`
 	dailyDigestDeploymentsStmt         = `SELECT id, user_id, target_name, commit_sha, branch, comment, state, created_at FROM deployments WHERE state = 'successful' AND application_name = ? AND target_name = ? AND created_at > ? ORDER BY created_at ASC;`
 )
 
@@ -44,7 +44,7 @@ func createDeployment(db *sql.DB, d *models.Deployment) error {
 	if err != nil {
 		return err
 	}
-	exists, err := activeDeploymentExists(tx, d.TargetName)
+	exists, err := activeDeploymentExists(tx, d.ApplicationName, d.TargetName)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -355,9 +355,9 @@ func selectUsersStmt(ids []int) string {
 	return stmt
 }
 
-func activeDeploymentExists(tx *sql.Tx, targetName string) (bool, error) {
+func activeDeploymentExists(tx *sql.Tx, applicationName, targetName string) (bool, error) {
 	var state string
-	err := tx.QueryRow(activeDeploymentsStmt, targetName).Scan(&state)
+	err := tx.QueryRow(activeDeploymentsStmt, applicationName, targetName).Scan(&state)
 	switch {
 	case err == sql.ErrNoRows:
 		return false, nil
