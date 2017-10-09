@@ -517,16 +517,16 @@ func TestGetUser(t *testing.T) {
 	}
 }
 
-func TestGetOrCreateUser(t *testing.T) {
+func TestCreateOnCreateOrUpdateUser(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
 	user := buildUser(12345, "mrnugget")
 
-	err := getOrCreateUser(db, user)
+	err := createOrUpdateUser(db, user)
 	checkErr(t, err)
 
-	err = getOrCreateUser(db, user)
+	err = createOrUpdateUser(db, user)
 	checkErr(t, err)
 
 	var count int
@@ -537,16 +537,45 @@ func TestGetOrCreateUser(t *testing.T) {
 	}
 }
 
+func TestUpdateOnCreateOrUpdateUser(t *testing.T) {
+	db := newTestDb(t)
+	defer cleanCloseTestDb(db, t)
+
+	user := buildUser(12345, "mrnugget")
+	err := createOrUpdateUser(db, user)
+	checkErr(t, err)
+
+	user.AccessToken = "newaccesstoken"
+	user.AvatarUrl = "http://www.github.com/avatars/new_avatar.png"
+
+	err = createOrUpdateUser(db, user)
+	checkErr(t, err)
+
+	var accessTokenInDb string
+	err = db.QueryRow("SELECT access_token FROM users WHERE id = ?", user.Id).Scan(&accessTokenInDb)
+	checkErr(t, err)
+	if accessTokenInDb != user.AccessToken {
+		t.Errorf("Expected access token to be updated. want=%s, got=%s", user.AccessToken, accessTokenInDb)
+	}
+
+	var avatarUrl string
+	err = db.QueryRow("SELECT avatar_url FROM users WHERE id = ?", user.Id).Scan(&avatarUrl)
+	checkErr(t, err)
+	if avatarUrl != user.AvatarUrl {
+		t.Errorf("Expected avatar to be updated. want=%s, got=%s", user.AvatarUrl, avatarUrl)
+	}
+}
+
 func TestLoadDeploymentsUsers(t *testing.T) {
 	db := newTestDb(t)
 	defer cleanCloseTestDb(db, t)
 
 	userOne := buildUser(12345, "mrnugget")
-	err := getOrCreateUser(db, userOne)
+	err := createOrUpdateUser(db, userOne)
 	checkErr(t, err)
 
 	userTwo := buildUser(56789, "fabrik42")
-	err = getOrCreateUser(db, userTwo)
+	err = createOrUpdateUser(db, userTwo)
 	checkErr(t, err)
 
 	deploymentOne := buildDeployment(userOne.Id)
