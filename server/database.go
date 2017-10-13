@@ -27,6 +27,7 @@ const (
 	logEntryInsertStmt                 = `INSERT INTO log_entries (deployment_id, entry_type, origin, message, timestamp, created_at) VALUES (?, ?, ?, ?, ?, ?);`
 	deploymentLogEntriesStmt           = `SELECT id, deployment_id, entry_type, origin, message, timestamp FROM log_entries WHERE log_entries.deployment_id = ? ORDER BY timestamp ASC`
 	userInsertStmt                     = `INSERT INTO users(id, name, access_token, avatar_url, api_token) VALUES(?, ?, ?, ?, ?);`
+	userUpdateStmt                     = `UPDATE users SET access_token = ?, avatar_url = ? WHERE id = ?;`
 	userStmt                           = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE id = ?;`
 	userApiTokenStmt                   = `SELECT id, name, access_token, avatar_url, api_token FROM users WHERE api_token = ?;`
 	activeDeploymentsStmt              = `SELECT state FROM deployments WHERE application_name = ? AND target_name = ? AND state = 'active' LIMIT 1;`
@@ -249,6 +250,11 @@ func createUser(db *sql.DB, u *models.User) error {
 	return err
 }
 
+func updateUser(db *sql.DB, u *models.User) error {
+	_, err := db.Exec(userUpdateStmt, u.AccessToken, u.AvatarUrl, u.Id)
+	return err
+}
+
 func getUser(db *sql.DB, id int) (*models.User, error) {
 	u := &models.User{}
 
@@ -309,10 +315,11 @@ func getUsers(db *sql.DB, ids []int) ([]*models.User, error) {
 	return users, nil
 }
 
-func getOrCreateUser(db *sql.DB, u *models.User) error {
+func createOrUpdateUser(db *sql.DB, u *models.User) error {
 	saved, err := getUser(db, u.Id)
 	if saved != nil && err == nil {
-		return nil
+		err = updateUser(db, u)
+		return err
 	}
 	err = createUser(db, u)
 	return err

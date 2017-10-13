@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+* Store new GitHub access token in case the previous token has been revoked and
+  the user re-authenticates. (nlochschmidt)
 * Fix the "deployment already in progress" check. The check was wrong, since it
   did not take the application that's being deployed into account, only the
   target. (mrnugget)

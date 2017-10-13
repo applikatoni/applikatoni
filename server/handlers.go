@@ -467,7 +467,7 @@ func oauth2callbackHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = getOrCreateUser(db, user)
+	err = createOrUpdateUser(db, user)
 	if err != nil {
 		log.Println("insertUser failed", err)
 		http.Error(w, err.Error(), http.StatusInternalServerError)
