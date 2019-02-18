@@ -41,7 +41,7 @@ func NewManager(c *models.DeploymentConfig, r *LogRouter, kc chan struct{}) (*Ma
 	return m, nil
 }
 
-// Starts the broadcasting of LogEntries with the DeploymentLogger
+// AnnounceStart starts the broadcasting of LogEntries with the DeploymentLogger
 // and logs the start of the deployment
 func (m *Manager) AnnounceStart() {
 	m.logger.BroadcastLogs()
